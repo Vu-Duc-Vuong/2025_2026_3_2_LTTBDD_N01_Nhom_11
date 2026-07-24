@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/pet_model.dart';
 import '../pet_management/pet_management_screen.dart';
+import '../../settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -55,10 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF7F8FA),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
@@ -81,7 +81,6 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: EdgeInsets.only(right: 15),
             child: Icon(
               Icons.notifications_none,
-              color: Colors.black,
               size: 30,
             ),
           ),
@@ -186,12 +185,32 @@ class _HomeScreenState extends State<HomeScreen> {
           height: 65,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: const [
-              Icon(Icons.home, color: Colors.teal),
-              Icon(Icons.pets),
-              SizedBox(width: 30),
-              Icon(Icons.notifications_none),
-              Icon(Icons.settings),
+            children: [
+              IconButton(
+                icon: const Icon(Icons.home, color: Colors.teal),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: const Icon(Icons.pets),
+                onPressed: _openPetManagement,
+              ),
+              const SizedBox(width: 30),
+              IconButton(
+                icon: const Icon(Icons.notifications_none),
+                onPressed: () {},
+              ),
+              // --- ĐÃ KẾT NỐI MÀN HÌNH CÀI ĐẶT TẠI ĐÂY ---
+              IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsScreen(),
+                    ),
+                  );
+                },
+              ),
             ],
           ),
         ),
