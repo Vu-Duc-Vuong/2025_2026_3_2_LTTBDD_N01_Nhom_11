@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../models/pet_model.dart';
 import '../pet_management/pet_management_screen.dart';
 import '../../settings_screen.dart';
+import '../../language_notifier.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -301,4 +302,24 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
+@override
+Widget build(BuildContext context) {
+  return ValueListenableBuilder<String>(
+    valueListenable: languageNotifier,
+    builder: (context, currentLang, child) {
+      final isEnglish = currentLang == 'English';
+
+      return Scaffold(
+        // Thay các chuỗi văn bản bằng kiểm tra isEnglish:
+        // Subtitle: isEnglish ? 'Pet care & love' : 'Yêu thương & chăm sóc thú cưng'
+        // Nút Thú cưng: isEnglish ? 'Pets' : 'Thú cưng'
+        // Nút Lịch tiêm: isEnglish ? 'Vaccines' : 'Lịch tiêm'
+        // Nút Cân nặng: isEnglish ? 'Weight' : 'Cân nặng'
+        // Nút Thư viện: isEnglish ? 'Gallery' : 'Thư viện'
+        // Tiêu đề: isEnglish ? 'Upcoming Schedule' : 'Lịch sắp tới'
+        // Xem tất cả: isEnglish ? 'See all' : 'Xem tất cả'
+      );
+    },
+  );
 }
