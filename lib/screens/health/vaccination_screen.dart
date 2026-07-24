@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../../services/vaccination_service.dart';
+import '../../models/vaccination_model.dart';
+
 
 
 class VaccinationScreen extends StatefulWidget {
@@ -18,6 +21,190 @@ class VaccinationScreen extends StatefulWidget {
 class _VaccinationScreenState extends State<VaccinationScreen> {
 
 
+  final nameController = TextEditingController();
+
+  final dateController = TextEditingController();
+
+  final statusController = TextEditingController();
+
+
+
+  void addVaccination(){
+
+
+    showDialog(
+
+      context: context,
+
+      builder: (context){
+
+
+        return AlertDialog(
+
+
+          title:
+          const Text(
+            "Thêm lịch tiêm",
+          ),
+
+
+
+          content:
+
+          Column(
+
+            mainAxisSize:
+            MainAxisSize.min,
+
+
+            children: [
+
+
+              TextField(
+
+                controller:
+                nameController,
+
+                decoration:
+                const InputDecoration(
+
+                  labelText:
+                  "Tên vaccine",
+
+                ),
+
+              ),
+
+
+
+              TextField(
+
+                controller:
+                dateController,
+
+                decoration:
+                const InputDecoration(
+
+                  labelText:
+                  "Ngày tiêm",
+
+                ),
+
+              ),
+
+
+
+              TextField(
+
+                controller:
+                statusController,
+
+                decoration:
+                const InputDecoration(
+
+                  labelText:
+                  "Trạng thái",
+
+                ),
+
+              ),
+
+
+            ],
+
+          ),
+
+
+
+          actions: [
+
+
+            TextButton(
+
+              onPressed: (){
+
+                Navigator.pop(context);
+
+              },
+
+
+              child:
+              const Text(
+                "Hủy",
+              ),
+
+            ),
+
+
+
+            ElevatedButton(
+
+              onPressed: (){
+
+
+                VaccinationService.addVaccination(
+
+                  VaccinationModel(
+
+                    name:
+                    nameController.text,
+
+
+                    date:
+                    dateController.text,
+
+
+                    status:
+                    statusController.text,
+
+                  ),
+
+                );
+
+
+
+                setState(() {});
+
+
+                nameController.clear();
+
+                dateController.clear();
+
+                statusController.clear();
+
+
+
+                Navigator.pop(context);
+
+
+              },
+
+
+              child:
+              const Text(
+                "Lưu",
+              ),
+
+            ),
+
+
+          ],
+
+
+        );
+
+
+      },
+
+
+    );
+
+
+  }
+
+
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -32,7 +219,8 @@ class _VaccinationScreenState extends State<VaccinationScreen> {
 
       appBar: AppBar(
 
-        title: const Text(
+        title:
+        const Text(
           "Lịch tiêm",
         ),
 
@@ -40,12 +228,30 @@ class _VaccinationScreenState extends State<VaccinationScreen> {
 
 
 
+      floatingActionButton:
+
+      FloatingActionButton(
+
+        onPressed:
+        addVaccination,
+
+
+        child:
+        const Icon(
+          Icons.add,
+        ),
+
+      ),
+
+
+
+
 
       body: Padding(
 
 
-        padding: const EdgeInsets.all(16),
-
+        padding:
+        const EdgeInsets.all(16),
 
 
 
@@ -53,7 +259,7 @@ class _VaccinationScreenState extends State<VaccinationScreen> {
 
 
           crossAxisAlignment:
-              CrossAxisAlignment.start,
+          CrossAxisAlignment.start,
 
 
 
@@ -73,7 +279,8 @@ class _VaccinationScreenState extends State<VaccinationScreen> {
                 fontSize: 20,
 
 
-                fontWeight: FontWeight.bold,
+                fontWeight:
+                FontWeight.bold,
 
 
               ),
@@ -94,155 +301,144 @@ class _VaccinationScreenState extends State<VaccinationScreen> {
 
 
 
-              child: vaccinationList.isEmpty
+              child:
+
+              vaccinationList.isEmpty
 
 
 
                   ? const Center(
 
 
-                      child: Text(
+                child:
 
-                        "Chưa có lịch tiêm",
+                Text(
+
+                  "Chưa có lịch tiêm",
+
+                ),
+
+              )
+
+
+
+                  :
+
+              ListView.builder(
+
+
+
+                itemCount:
+                vaccinationList.length,
+
+
+
+
+                itemBuilder:
+                    (context, index) {
+
+
+                  bool completed =
+
+                      vaccinationList[index]
+                          .status ==
+                          "Đã tiêm";
+
+
+
+
+                  return Card(
+
+
+
+                    child:
+
+                    ListTile(
+
+
+
+                      leading:
+
+                      Icon(
+
+
+                        Icons.vaccines,
+
+
+                        size: 35,
+
+
+
+                        color:
+
+                        completed
+
+                            ? Colors.green
+
+                            : Colors.orange,
+
 
                       ),
 
-                    )
 
 
 
-                  : ListView.builder(
 
+                      title:
 
+                      Text(
 
-                      itemCount:
-                          vaccinationList.length,
 
 
+                        vaccinationList[index]
+                            .name,
 
 
-                      itemBuilder:
-                          (context, index) {
 
+                        style:
 
+                        const TextStyle(
 
-                        bool completed =
 
-                            vaccinationList[index]
-                                    .status ==
-                                "Đã tiêm";
 
+                          fontSize: 18,
 
 
+                          fontWeight:
+                          FontWeight.bold,
 
-                        return Card(
 
+                        ),
 
 
-                          child: ListTile(
 
+                      ),
 
 
-                            leading: Icon(
 
 
 
-                              Icons.vaccines,
 
+                      subtitle:
 
-                              size: 35,
+                      Column(
 
 
 
-                              color: completed
+                        crossAxisAlignment:
+                        CrossAxisAlignment.start,
 
-                                  ? Colors.green
 
-                                  : Colors.orange,
 
+                        children: [
 
 
-                            ),
 
+                          Text(
 
 
 
-
-                            title: Text(
-
-
-
-                              vaccinationList[index]
-                                  .name,
-
-
-
-                              style: const TextStyle(
-
-
-
-                                fontSize: 18,
-
-
-                                fontWeight:
-                                    FontWeight.bold,
-
-
-
-                              ),
-
-
-
-                            ),
-
-
-
-
-
-                            subtitle: Column(
-
-
-
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start,
-
-
-
-                              children: [
-
-
-
-                                Text(
-
-
-
-                                  "Ngày tiêm: ${vaccinationList[index].date}",
-
-
-
-                                ),
-
-
-
-
-                                Text(
-
-
-
-                                  "Trạng thái: ${vaccinationList[index].status}",
-
-
-
-                                ),
-
-
-
-
-                              ],
-
-
-
-                            ),
+                            "Ngày tiêm: ${vaccinationList[index].date}",
 
 
 
@@ -250,15 +446,40 @@ class _VaccinationScreenState extends State<VaccinationScreen> {
 
 
 
-                        );
+
+                          Text(
 
 
 
-                      },
+                            "Trạng thái: ${vaccinationList[index].status}",
+
+
+
+                          ),
+
+
+
+                        ],
+
+
+
+                      ),
 
 
 
                     ),
+
+
+
+                  );
+
+
+
+                },
+
+
+
+              ),
 
 
 
