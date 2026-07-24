@@ -1,43 +1,30 @@
 import 'package:flutter/material.dart';
+import '../../services/vaccination_service.dart';
 
 
-class VaccinationScreen extends StatelessWidget {
+class VaccinationScreen extends StatefulWidget {
 
   const VaccinationScreen({super.key});
 
 
+  @override
+  State<VaccinationScreen> createState() =>
+      _VaccinationScreenState();
 
-  // Dữ liệu lịch tiêm tạm
-
-  final List<Map<String, String>> vaccinationList = const [
-
-    {
-      "name": "Vaccine phòng dại",
-      "date": "10/03/2026",
-      "status": "Đã tiêm",
-    },
+}
 
 
-    {
-      "name": "Vaccine 5 bệnh",
-      "date": "15/04/2026",
-      "status": "Đã tiêm",
-    },
 
-
-    {
-      "name": "Vaccine Care",
-      "date": "20/08/2026",
-      "status": "Chưa tiêm",
-    },
-
-  ];
-
-
+class _VaccinationScreenState extends State<VaccinationScreen> {
 
 
   @override
   Widget build(BuildContext context) {
+
+
+    final vaccinationList =
+        VaccinationService.vaccinationList;
+
 
 
     return Scaffold(
@@ -53,16 +40,20 @@ class VaccinationScreen extends StatelessWidget {
 
 
 
+
       body: Padding(
 
+
         padding: const EdgeInsets.all(16),
+
 
 
 
         child: Column(
 
 
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment:
+              CrossAxisAlignment.start,
 
 
 
@@ -72,17 +63,24 @@ class VaccinationScreen extends StatelessWidget {
 
             const Text(
 
+
               "Lịch sử tiêm phòng",
+
 
               style: TextStyle(
 
+
                 fontSize: 20,
+
 
                 fontWeight: FontWeight.bold,
 
+
               ),
 
+
             ),
+
 
 
 
@@ -94,94 +92,169 @@ class VaccinationScreen extends StatelessWidget {
 
             Expanded(
 
-              child: ListView.builder(
 
 
-                itemCount: vaccinationList.length,
-
-
-
-                itemBuilder: (context, index) {
+              child: vaccinationList.isEmpty
 
 
 
-                  bool completed =
-
-                      vaccinationList[index]["status"] == "Đã tiêm";
+                  ? const Center(
 
 
+                      child: Text(
 
-                  return Card(
-
-
-
-                    child: ListTile(
-
-
-
-                      leading: Icon(
-
-                        Icons.vaccines,
-
-                        size: 35,
-
-                        color: completed
-
-                            ? Colors.green
-
-                            : Colors.orange,
+                        "Chưa có lịch tiêm",
 
                       ),
 
+                    )
 
 
 
-                      title: Text(
+                  : ListView.builder(
 
-                        vaccinationList[index]["name"]!,
 
-                        style: const TextStyle(
 
-                          fontSize: 18,
-
-                          fontWeight: FontWeight.bold,
-
-                        ),
-
-                      ),
+                      itemCount:
+                          vaccinationList.length,
 
 
 
 
-                      subtitle: Column(
-
-                        crossAxisAlignment:
-
-                            CrossAxisAlignment.start,
-
-                        children: [
+                      itemBuilder:
+                          (context, index) {
 
 
 
-                          Text(
+                        bool completed =
 
-                            "Ngày tiêm: ${vaccinationList[index]["date"]}",
+                            vaccinationList[index]
+                                    .status ==
+                                "Đã tiêm";
+
+
+
+
+                        return Card(
+
+
+
+                          child: ListTile(
+
+
+
+                            leading: Icon(
+
+
+
+                              Icons.vaccines,
+
+
+                              size: 35,
+
+
+
+                              color: completed
+
+                                  ? Colors.green
+
+                                  : Colors.orange,
+
+
+
+                            ),
+
+
+
+
+
+                            title: Text(
+
+
+
+                              vaccinationList[index]
+                                  .name,
+
+
+
+                              style: const TextStyle(
+
+
+
+                                fontSize: 18,
+
+
+                                fontWeight:
+                                    FontWeight.bold,
+
+
+
+                              ),
+
+
+
+                            ),
+
+
+
+
+
+                            subtitle: Column(
+
+
+
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+
+
+
+                              children: [
+
+
+
+                                Text(
+
+
+
+                                  "Ngày tiêm: ${vaccinationList[index].date}",
+
+
+
+                                ),
+
+
+
+
+                                Text(
+
+
+
+                                  "Trạng thái: ${vaccinationList[index].status}",
+
+
+
+                                ),
+
+
+
+
+                              ],
+
+
+
+                            ),
+
+
 
                           ),
 
 
 
-                          Text(
-
-                            "Trạng thái: ${vaccinationList[index]["status"]}",
-
-                          ),
+                        );
 
 
 
-                        ],
-
-                      ),
+                      },
 
 
 
@@ -189,25 +262,21 @@ class VaccinationScreen extends StatelessWidget {
 
 
 
-                  );
-
-
-
-                },
-
-
-              ),
-
             ),
+
 
 
 
           ],
 
 
+
         ),
 
+
+
       ),
+
 
 
     );
