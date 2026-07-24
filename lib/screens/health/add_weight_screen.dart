@@ -21,11 +21,16 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
   // Tự thêm dấu /
   void formatDate(String value) {
 
-    String numbers = value.replaceAll("/", "");
+    String numbers = value.replaceAll(
+      RegExp(r'[^0-9]'),
+      '',
+    );
 
 
     if (numbers.length > 8) {
+
       numbers = numbers.substring(0, 8);
+
     }
 
 
@@ -39,8 +44,8 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
           "${numbers.substring(2, 4)}/"
           "${numbers.substring(4)}";
 
-    } 
-    
+    }
+
     else if (numbers.length >= 2) {
 
       formatted =
@@ -48,6 +53,7 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
           "${numbers.substring(2)}";
 
     }
+
 
 
     dateController.value = TextEditingValue(
@@ -61,6 +67,7 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
     );
 
   }
+
 
 
 
@@ -90,6 +97,7 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
 
 
 
+
     if (dateController.text.length != 10) {
 
 
@@ -112,6 +120,91 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
 
 
 
+    // Kiểm tra ngày tháng năm
+
+    List<String> date =
+        dateController.text.split("/");
+
+
+
+    int day = int.parse(date[0]);
+
+    int month = int.parse(date[1]);
+
+    int year = int.parse(date[2]);
+
+
+
+
+    if (day < 1 || day > 31) {
+
+
+      ScaffoldMessenger.of(context).showSnackBar(
+
+        const SnackBar(
+
+          content: Text(
+            "Ngày phải từ 01 đến 31",
+          ),
+
+        ),
+
+      );
+
+
+      return;
+
+    }
+
+
+
+
+    if (month < 1 || month > 12) {
+
+
+      ScaffoldMessenger.of(context).showSnackBar(
+
+        const SnackBar(
+
+          content: Text(
+            "Tháng phải từ 01 đến 12",
+          ),
+
+        ),
+
+      );
+
+
+      return;
+
+    }
+
+
+
+
+    if (year < 2000 || year > 2100) {
+
+
+      ScaffoldMessenger.of(context).showSnackBar(
+
+        const SnackBar(
+
+          content: Text(
+            "Năm không hợp lệ",
+          ),
+
+        ),
+
+      );
+
+
+      return;
+
+    }
+
+
+
+
     ScaffoldMessenger.of(context).showSnackBar(
 
       SnackBar(
@@ -125,6 +218,7 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
       ),
 
     );
+
 
 
     weightController.clear();
@@ -158,9 +252,11 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
         padding: const EdgeInsets.all(16),
 
 
+
         child: Column(
 
           children: [
+
 
 
             TextField(
@@ -174,6 +270,7 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
               onChanged: formatDate,
 
 
+
               decoration: const InputDecoration(
 
                 labelText: "Ngày cân (DD/MM/YYYY)",
@@ -182,9 +279,11 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
                 hintText: "Ví dụ: 27/07/2026",
 
 
+
                 prefixIcon: Icon(
                   Icons.calendar_today,
                 ),
+
 
 
                 border: OutlineInputBorder(),
@@ -195,7 +294,10 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
 
 
 
+
             const SizedBox(height: 20),
+
+
 
 
 
@@ -207,6 +309,7 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
               keyboardType: TextInputType.number,
 
 
+
               decoration: const InputDecoration(
 
                 labelText: "Cân nặng (kg)",
@@ -215,9 +318,11 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
                 hintText: "Ví dụ: 12.5",
 
 
+
                 prefixIcon: Icon(
                   Icons.monitor_weight,
                 ),
+
 
 
                 border: OutlineInputBorder(),
@@ -228,7 +333,10 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
 
 
 
+
             const SizedBox(height: 30),
+
+
 
 
 
@@ -237,9 +345,11 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
               width: double.infinity,
 
 
+
               child: ElevatedButton(
 
                 onPressed: saveWeight,
+
 
 
                 child: const Text(
@@ -251,6 +361,7 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
             ),
 
 
+
           ],
 
         ),
@@ -260,5 +371,6 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
     );
 
   }
+
 
 }
