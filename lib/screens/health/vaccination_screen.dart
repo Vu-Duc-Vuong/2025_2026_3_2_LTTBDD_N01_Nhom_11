@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
-class HealthScreen extends StatelessWidget {
-  const HealthScreen({super.key});
+class VaccinationScreen extends StatelessWidget {
+  const VaccinationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Sức khỏe"),
+        title: const Text("Lịch tiêm"),
       ),
       body: const Center(
-        child: Text("Health Screen"),
+        child: Text("Vaccination Screen"),
       ),
     );
   }
