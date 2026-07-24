@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'pet_profile_screen.dart';
 import 'weight_screen.dart';
 import 'add_weight_screen.dart';
+import 'vaccination_screen.dart';
 
 class HealthScreen extends StatelessWidget {
   const HealthScreen({super.key});
@@ -126,11 +127,8 @@ class HealthScreen extends StatelessWidget {
             ),
 
 
-            // Hồ sơ thú cưng
             ListTile(
-              leading: const Icon(
-                Icons.person,
-              ),
+              leading: const Icon(Icons.person),
 
               title: const Text(
                 "Hồ sơ thú cưng",
@@ -155,7 +153,6 @@ class HealthScreen extends StatelessWidget {
             ),
 
 
-            // Danh sách cân nặng
             ListTile(
               leading: const Icon(
                 Icons.monitor_weight,
@@ -184,7 +181,6 @@ class HealthScreen extends StatelessWidget {
             ),
 
 
-            // Thêm cân nặng
             ListTile(
               leading: const Icon(
                 Icons.add,
@@ -226,6 +222,24 @@ class HealthScreen extends StatelessWidget {
               trailing: const Icon(
                 Icons.arrow_forward_ios,
               ),
+
+
+              onTap: () {
+
+                Navigator.push(
+
+                  context,
+
+                  MaterialPageRoute(
+
+                    builder: (context) =>
+                        const VaccinationScreen(),
+
+                  ),
+
+                );
+
+              },
 
             ),
 
