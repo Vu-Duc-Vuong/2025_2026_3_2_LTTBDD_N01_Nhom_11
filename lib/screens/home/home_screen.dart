@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/pet_model.dart';
 import '../pet_management/pet_management_screen.dart';
+import '../vaccine/vaccine_schedule_screen.dart';
 import '../../settings_screen.dart';
 import '../../language_notifier.dart';
 
@@ -12,7 +13,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Danh sách thú cưng dùng chung toàn ứng dụng
   List<Pet> petList = [
     Pet(
       id: '1',
@@ -40,7 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
     ),
   ];
 
-  // Điều hướng sang màn hình Quản lý thú cưng và nhận danh sách mới trả về
   void _openPetManagement() async {
     final updatedList = await Navigator.push(
       context,
@@ -126,7 +125,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         Icons.vaccines,
                         isEnglish ? "Vaccines" : "Lịch tiêm",
                         Colors.deepPurple,
-                        () {},
+                        () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const VaccineScheduleScreen(),
+                            ),
+                          );
+                        },
                       ),
                       menu(
                         context,
