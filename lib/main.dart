@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/health/health_screen.dart';
+import 'screens/home/home_screen.dart';
 import 'theme_notifier.dart';
 
 void main() {
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Lắng nghe sự thay đổi của biến themeNotifier
+    // Lắng nghe sự thay đổi của biến themeNotifier để đổi Dark Mode toàn app
     return ValueListenableBuilder<ThemeMode>(
       valueListenable: themeNotifier,
       builder: (context, currentMode, child) {
@@ -19,13 +19,13 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: "Pet Management",
           
-          // --- KÍCH HOẠT DARK MODE Ở ĐÂY ---
+          // Giữ nguyên thiết lập Theme
           theme: ThemeData.light(),
           darkTheme: ThemeData.dark(),
           themeMode: currentMode,
-          // ---------------------------------
           
-          home: const HealthScreen(),
+          // Giữ màn hình HomeScreen từ nhánh remote của nhóm
+          home: const HomeScreen(),
         );
       },
     );
