@@ -1,31 +1,19 @@
 import 'package:flutter/material.dart';
-import 'screens/health/health_screen.dart';
-
+import 'screens/home/home_screen.dart';
 
 void main() {
-  runApp(
-    const MyApp()
-  );
+  runApp(const MyApp());
 }
 
-
 class MyApp extends StatelessWidget {
-
   const MyApp({super.key});
-
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
-
       debugShowCheckedModeBanner: false,
-
-      title: "Pet Management",
-
-      home: const HealthScreen(),
-
+      title: 'Pet Management',
+      home: const HomeScreen(),
     );
-
   }
 }
