@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'pet_profile_screen.dart';
 import 'weight_screen.dart';
+import 'add_weight_screen.dart';
 
 class HealthScreen extends StatelessWidget {
   const HealthScreen({super.key});
@@ -22,7 +23,6 @@ class HealthScreen extends StatelessWidget {
 
           children: [
 
-            // Thông tin thú cưng
             Card(
               child: ListTile(
                 leading: const Icon(
@@ -197,6 +197,19 @@ class HealthScreen extends StatelessWidget {
               trailing: const Icon(
                 Icons.arrow_forward_ios,
               ),
+
+              onTap: () {
+
+                Navigator.push(
+                  context,
+
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const AddWeightScreen(),
+                  ),
+                );
+
+              },
             ),
 
 
@@ -213,6 +226,7 @@ class HealthScreen extends StatelessWidget {
               trailing: const Icon(
                 Icons.arrow_forward_ios,
               ),
+
             ),
 
           ],
