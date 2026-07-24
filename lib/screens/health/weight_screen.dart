@@ -34,9 +34,7 @@ class _WeightScreenState extends State<WeightScreen> {
     for(int i = 0; i < WeightService.weightList.length; i++){
 
 
-      double weight =
-
-      double.parse(
+      double weight = double.parse(
 
         WeightService
             .weightList[i]
@@ -66,8 +64,110 @@ class _WeightScreenState extends State<WeightScreen> {
 
     return spots;
 
+  }
+
+
+
+
+
+  double getMinWeight(){
+
+
+    if(WeightService.weightList.isEmpty){
+
+      return 0;
+
+    }
+
+
+    double min = double.parse(
+
+      WeightService.weightList[0]
+          .weight
+          .replaceAll(" kg", ""),
+
+    );
+
+
+
+    for(var item in WeightService.weightList){
+
+
+      double value = double.parse(
+
+        item.weight.replaceAll(" kg", ""),
+
+      );
+
+
+      if(value < min){
+
+        min = value;
+
+      }
+
+
+    }
+
+
+
+    return min - 1;
+
 
   }
+
+
+
+
+
+
+
+  double getMaxWeight(){
+
+
+    if(WeightService.weightList.isEmpty){
+
+      return 10;
+
+    }
+
+
+    double max = double.parse(
+
+      WeightService.weightList[0]
+          .weight
+          .replaceAll(" kg", ""),
+
+    );
+
+
+
+    for(var item in WeightService.weightList){
+
+
+      double value = double.parse(
+
+        item.weight.replaceAll(" kg", ""),
+
+      );
+
+
+      if(value > max){
+
+        max = value;
+
+      }
+
+
+    }
+
+
+
+    return max + 1;
+
+
+  }
+
 
 
 
@@ -108,7 +208,6 @@ class _WeightScreenState extends State<WeightScreen> {
 
         padding:
         const EdgeInsets.all(16),
-
 
 
 
@@ -163,7 +262,7 @@ class _WeightScreenState extends State<WeightScreen> {
             SizedBox(
 
 
-              height:250,
+              height:280,
 
 
 
@@ -178,6 +277,7 @@ class _WeightScreenState extends State<WeightScreen> {
               const Center(
 
                 child:
+
                 Text(
                   "Chưa có dữ liệu",
                 ),
@@ -194,6 +294,16 @@ class _WeightScreenState extends State<WeightScreen> {
                 LineChartData(
 
 
+                  minY:
+                  getMinWeight(),
+
+
+
+                  maxY:
+                  getMaxWeight(),
+
+
+
                   gridData:
 
                   const FlGridData(
@@ -204,13 +314,132 @@ class _WeightScreenState extends State<WeightScreen> {
 
 
 
+
                   titlesData:
 
-                  const FlTitlesData(
+                  FlTitlesData(
 
-                    show:true,
+
+
+                    leftTitles:
+
+                    AxisTitles(
+
+                      sideTitles:
+
+                      SideTitles(
+
+                        showTitles:true,
+
+                        reservedSize:40,
+
+                        interval:1,
+
+                      ),
+
+                    ),
+
+
+
+
+
+                    bottomTitles:
+
+                    AxisTitles(
+
+                      sideTitles:
+
+                      SideTitles(
+
+                        showTitles:true,
+
+                        reservedSize:35,
+
+
+
+                        getTitlesWidget:
+
+                            (value, meta){
+
+
+
+                          int index =
+                          value.toInt();
+
+
+
+                          if(index >=0 &&
+                              index < weightList.length){
+
+
+                            return Text(
+
+                              weightList[index]
+                                  .date
+                                  .substring(0,5),
+
+                              style:
+
+                              const TextStyle(
+
+                                fontSize:10,
+
+                              ),
+
+                            );
+
+
+                          }
+
+
+
+                          return const Text("");
+
+                        },
+
+
+                      ),
+
+                    ),
+
+
+
+
+                    rightTitles:
+
+                    const AxisTitles(
+
+                      sideTitles:
+
+                      SideTitles(
+
+                        showTitles:false,
+
+                      ),
+
+                    ),
+
+
+
+
+                    topTitles:
+
+                    const AxisTitles(
+
+                      sideTitles:
+
+                      SideTitles(
+
+                        showTitles:false,
+
+                      ),
+
+                    ),
+
+
 
                   ),
+
 
 
 
@@ -257,11 +486,67 @@ class _WeightScreenState extends State<WeightScreen> {
 
 
 
+
                     ),
 
 
 
                   ],
+
+
+
+
+                  lineTouchData:
+
+                  LineTouchData(
+
+
+                    touchTooltipData:
+
+                    LineTouchTooltipData(
+
+
+                      getTooltipItems:
+
+                          (spots){
+
+
+                        return spots.map((spot){
+
+
+                          int index =
+                          spot.x.toInt();
+
+
+
+                          return LineTooltipItem(
+
+
+                            "${weightList[index].date}\n"
+                                "${spot.y} kg",
+
+
+
+                            const TextStyle(
+
+                              fontWeight:
+                              FontWeight.bold,
+
+                            ),
+
+
+                          );
+
+
+                        }).toList();
+
+
+                      },
+
+                    ),
+
+
+                  ),
 
 
 
@@ -279,8 +564,9 @@ class _WeightScreenState extends State<WeightScreen> {
 
 
 
-            const SizedBox(height:25),
 
+
+            const SizedBox(height:25),
 
 
 
@@ -291,6 +577,7 @@ class _WeightScreenState extends State<WeightScreen> {
 
 
               "Lịch sử cân nặng",
+
 
 
               style:
@@ -372,15 +659,11 @@ class _WeightScreenState extends State<WeightScreen> {
 
                       const Icon(
 
-
                         Icons.monitor_weight,
-
 
                         size:35,
 
-
                       ),
-
 
 
 
@@ -389,28 +672,20 @@ class _WeightScreenState extends State<WeightScreen> {
 
                       Text(
 
-
                         weightList[index].weight,
-
 
                         style:
 
                         const TextStyle(
 
-
                           fontSize:18,
-
 
                           fontWeight:
                           FontWeight.bold,
 
-
                         ),
 
-
                       ),
-
-
 
 
 
@@ -419,13 +694,9 @@ class _WeightScreenState extends State<WeightScreen> {
 
                       Text(
 
-
                         "Ngày cân: ${weightList[index].date}",
 
-
                       ),
-
-
 
 
 
