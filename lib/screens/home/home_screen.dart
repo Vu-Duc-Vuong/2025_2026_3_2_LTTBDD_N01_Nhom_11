@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../models/pet_model.dart';
 import '../pet_management/pet_management_screen.dart';
 import '../vaccine/vaccine_schedule_screen.dart';
+import '../gallery/gallery_screen.dart';
 import '../../settings_screen.dart';
 import '../../language_notifier.dart';
 
@@ -146,7 +147,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         Icons.photo_library,
                         isEnglish ? "Gallery" : "Thư viện",
                         Colors.redAccent,
-                        () {},
+                        () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const GalleryScreen(),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
