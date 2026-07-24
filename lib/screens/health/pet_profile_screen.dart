@@ -5,13 +5,24 @@ class PetProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
+
       appBar: AppBar(
-        title: const Text("Hồ sơ thú cưng"),
+        title: const Text(
+          "Hồ sơ thú cưng",
+        ),
       ),
+
       body: const Center(
-        child: Text("Pet Profile"),
+        child: Text(
+          "Thông tin hồ sơ thú cưng",
+          style: TextStyle(
+            fontSize: 20,
+          ),
+        ),
       ),
+
     );
   }
 }
