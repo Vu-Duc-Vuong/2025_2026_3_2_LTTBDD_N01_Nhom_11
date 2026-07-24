@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package0:flutter/material.dart';
 import 'theme_notifier.dart';
 import 'user_profile_screen.dart';
 import 'about_team_screen.dart';
@@ -13,13 +13,15 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   String _selectedLanguage = 'Tiếng Việt';
 
-  // Hộp thoại chọn ngôn ngữ
+  // Kiểm tra xem có đang chọn Tiếng Anh không
+  bool get _isEnglish => _selectedLanguage == 'English';
+
   void _showLanguageDialog() {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Chọn ngôn ngữ'),
+          title: Text(_isEnglish ? 'Select Language' : 'Chọn ngôn ngữ'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -52,7 +54,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  // Hộp thoại Thông tin ứng dụng
   void _showAppInfoDialog() {
     showAboutDialog(
       context: context,
@@ -62,11 +63,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
         backgroundColor: Colors.teal,
         child: Icon(Icons.pets, color: Colors.white),
       ),
-      children: const [
-        SizedBox(height: 10),
-        Text('Ứng dụng Quản lý & Chăm sóc Thú cưng chuyên nghiệp.'),
-        SizedBox(height: 5),
-        Text('Sản phẩm được hoàn thiện bởi Nhóm 11.'),
+      children: [
+        const SizedBox(height: 10),
+        Text(_isEnglish 
+          ? 'Professional Pet Care & Management Application.' 
+          : 'Ứng dụng Quản lý & Chăm sóc Thú cưng chuyên nghiệp.'),
+        const SizedBox(height: 5),
+        Text(_isEnglish 
+          ? 'Developed by Team 11.' 
+          : 'Sản phẩm được hoàn thiện bởi Nhóm 11.'),
       ],
     );
   }
@@ -75,14 +80,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cài đặt'),
+        title: Text(_isEnglish ? 'Settings' : 'Cài đặt'),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
           ListTile(
             leading: const Icon(Icons.person),
-            title: const Text('Hồ sơ'),
+            title: Text(_isEnglish ? 'Profile' : 'Hồ sơ'),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {
               Navigator.push(
@@ -94,7 +99,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.language),
-            title: const Text('Đổi ngôn ngữ'),
+            title: Text(_isEnglish ? 'Language' : 'Đổi ngôn ngữ'),
             subtitle: Text(_selectedLanguage, style: const TextStyle(fontSize: 12, color: Colors.grey)),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: _showLanguageDialog,
@@ -119,7 +124,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.group),
-            title: const Text('Giới thiệu nhóm'),
+            title: Text(_isEnglish ? 'About Team' : 'Giới thiệu nhóm'),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {
               Navigator.push(
@@ -131,7 +136,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.info),
-            title: const Text('Thông tin ứng dụng'),
+            title: Text(_isEnglish ? 'App Info' : 'Thông tin ứng dụng'),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: _showAppInfoDialog,
           ),
