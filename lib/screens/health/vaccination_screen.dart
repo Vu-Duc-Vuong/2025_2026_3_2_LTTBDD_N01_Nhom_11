@@ -6,10 +6,42 @@ class VaccinationScreen extends StatelessWidget {
   const VaccinationScreen({super.key});
 
 
+
+  // Dữ liệu lịch tiêm tạm
+
+  final List<Map<String, String>> vaccinationList = const [
+
+    {
+      "name": "Vaccine phòng dại",
+      "date": "10/03/2026",
+      "status": "Đã tiêm",
+    },
+
+
+    {
+      "name": "Vaccine 5 bệnh",
+      "date": "15/04/2026",
+      "status": "Đã tiêm",
+    },
+
+
+    {
+      "name": "Vaccine Care",
+      "date": "20/08/2026",
+      "status": "Chưa tiêm",
+    },
+
+  ];
+
+
+
+
   @override
   Widget build(BuildContext context) {
 
+
     return Scaffold(
+
 
       appBar: AppBar(
 
@@ -20,17 +52,22 @@ class VaccinationScreen extends StatelessWidget {
       ),
 
 
+
       body: Padding(
 
         padding: const EdgeInsets.all(16),
 
 
+
         child: Column(
+
 
           crossAxisAlignment: CrossAxisAlignment.start,
 
 
+
           children: [
+
 
 
             const Text(
@@ -48,116 +85,135 @@ class VaccinationScreen extends StatelessWidget {
             ),
 
 
-            const SizedBox(height: 20),
+
+            const SizedBox(height: 15),
 
 
 
-            Card(
-
-              child: ListTile(
-
-                leading: const Icon(
-
-                  Icons.vaccines,
-
-                  size: 40,
-
-                ),
 
 
-                title: const Text(
+            Expanded(
 
-                  "Vaccine dại",
-
-                ),
+              child: ListView.builder(
 
 
-                subtitle: const Text(
+                itemCount: vaccinationList.length,
 
-                  "Ngày tiêm: 10/03/2026\nTrạng thái: Đã tiêm",
 
-                ),
+
+                itemBuilder: (context, index) {
+
+
+
+                  bool completed =
+
+                      vaccinationList[index]["status"] == "Đã tiêm";
+
+
+
+                  return Card(
+
+
+
+                    child: ListTile(
+
+
+
+                      leading: Icon(
+
+                        Icons.vaccines,
+
+                        size: 35,
+
+                        color: completed
+
+                            ? Colors.green
+
+                            : Colors.orange,
+
+                      ),
+
+
+
+
+                      title: Text(
+
+                        vaccinationList[index]["name"]!,
+
+                        style: const TextStyle(
+
+                          fontSize: 18,
+
+                          fontWeight: FontWeight.bold,
+
+                        ),
+
+                      ),
+
+
+
+
+                      subtitle: Column(
+
+                        crossAxisAlignment:
+
+                            CrossAxisAlignment.start,
+
+                        children: [
+
+
+
+                          Text(
+
+                            "Ngày tiêm: ${vaccinationList[index]["date"]}",
+
+                          ),
+
+
+
+                          Text(
+
+                            "Trạng thái: ${vaccinationList[index]["status"]}",
+
+                          ),
+
+
+
+                        ],
+
+                      ),
+
+
+
+                    ),
+
+
+
+                  );
+
+
+
+                },
 
 
               ),
 
             ),
 
-
-
-            Card(
-
-              child: ListTile(
-
-                leading: const Icon(
-
-                  Icons.vaccines,
-
-                  size: 40,
-
-                ),
-
-
-                title: const Text(
-
-                  "Vaccine 5 bệnh",
-
-                ),
-
-
-                subtitle: const Text(
-
-                  "Ngày tiêm: 15/06/2026\nTrạng thái: Đã tiêm",
-
-                ),
-
-
-              ),
-
-            ),
-
-
-
-            Card(
-
-              child: ListTile(
-
-                leading: const Icon(
-
-                  Icons.warning,
-
-                  size: 40,
-
-                ),
-
-
-                title: const Text(
-
-                  "Vaccine cúm",
-
-                ),
-
-
-                subtitle: const Text(
-
-                  "Ngày tiêm: 20/08/2026\nTrạng thái: Sắp tới",
-
-                ),
-
-
-              ),
-
-            ),
 
 
           ],
+
 
         ),
 
       ),
 
+
     );
 
+
   }
+
 
 }
