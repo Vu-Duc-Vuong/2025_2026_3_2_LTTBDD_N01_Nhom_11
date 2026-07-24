@@ -26,7 +26,6 @@ class _WeightScreenState extends State<WeightScreen> {
 
     return Scaffold(
 
-
       appBar: AppBar(
 
         title: const Text(
@@ -39,20 +38,15 @@ class _WeightScreenState extends State<WeightScreen> {
 
       body: Padding(
 
-
         padding: const EdgeInsets.all(16),
-
 
 
         child: Column(
 
-
           crossAxisAlignment: CrossAxisAlignment.start,
 
 
-
           children: [
-
 
 
             const Text(
@@ -72,8 +66,6 @@ class _WeightScreenState extends State<WeightScreen> {
 
 
             const SizedBox(height: 15),
-
-
 
 
 
@@ -122,19 +114,13 @@ class _WeightScreenState extends State<WeightScreen> {
 
                             title: Text(
 
-
-                              weightList[index]["weight"],
-
-
+                              weightList[index].weight,
 
                               style: const TextStyle(
 
-
                                 fontSize: 18,
 
-
                                 fontWeight: FontWeight.bold,
-
 
                               ),
 
@@ -142,20 +128,15 @@ class _WeightScreenState extends State<WeightScreen> {
 
 
 
-
-
                             subtitle: Text(
 
-
-                              "Ngày cân: ${weightList[index]["date"]}",
-
+                              "Ngày cân: ${weightList[index].date}",
 
                             ),
 
 
 
                           ),
-
 
 
                         );
@@ -165,8 +146,8 @@ class _WeightScreenState extends State<WeightScreen> {
 
                     ),
 
-            ),
 
+            ),
 
 
           ],
