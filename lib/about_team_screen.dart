@@ -19,21 +19,21 @@ class AboutTeamScreen extends StatelessWidget {
           Card(
             child: ListTile(
               leading: CircleAvatar(child: Icon(Icons.star)),
-              title: Text('Nguyễn Văn Nhật Minh'),
+              title: Text('Nguyễn Ngọc Lượng'),
               subtitle: Text('Trưởng nhóm / Developer'),
             ),
           ),
           Card(
             child: ListTile(
               leading: CircleAvatar(child: Icon(Icons.person)),
-              title: Text('Thành viên 2'),
+              title: Text('Nguyễn Văn Nhật Minh'),
               subtitle: Text('Developer / UI-UX'),
             ),
           ),
           Card(
             child: ListTile(
               leading: CircleAvatar(child: Icon(Icons.person)),
-              title: Text('Thành viên 3'),
+              title: Text('Vũ Đức Vượng'),
               subtitle: Text('Tester / BA'),
             ),
           ),
