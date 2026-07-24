@@ -4,7 +4,7 @@ import '../models/weight_model.dart';
 class WeightService {
 
 
-  static List<WeightModel> weights = [
+  static final List<WeightModel> weightList = [
 
     WeightModel(
       date: "01/06/2026",
@@ -25,20 +25,11 @@ class WeightService {
 
 
 
-  static void addWeight(
-      String date,
-      String weight
-  ){
+  static void addWeight(WeightModel weight){
 
-    weights.add(
-
-      WeightModel(
-        date: date,
-        weight: weight,
-      ),
-
-    );
+    weightList.add(weight);
 
   }
+
 
 }
