@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
+import '../../services/weight_service.dart';
+
 
 class AddWeightScreen extends StatefulWidget {
+
   const AddWeightScreen({super.key});
+
 
   @override
   State<AddWeightScreen> createState() => _AddWeightScreenState();
+
 }
+
 
 
 class _AddWeightScreenState extends State<AddWeightScreen> {
 
+
   final TextEditingController weightController =
       TextEditingController();
+
 
   final TextEditingController dateController =
       TextEditingController();
@@ -20,6 +28,7 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
 
   // Tự thêm dấu /
   void formatDate(String value) {
+
 
     String numbers = value.replaceAll(
       RegExp(r'[^0-9]'),
@@ -34,19 +43,22 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
     }
 
 
+
     String formatted = numbers;
 
 
+
     if (numbers.length >= 4) {
+
 
       formatted =
           "${numbers.substring(0, 2)}/"
           "${numbers.substring(2, 4)}/"
           "${numbers.substring(4)}";
 
-    }
 
-    else if (numbers.length >= 2) {
+    } else if (numbers.length >= 2) {
+
 
       formatted =
           "${numbers.substring(0, 2)}/"
@@ -65,6 +77,7 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
       ),
 
     );
+
 
   }
 
@@ -98,6 +111,7 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
 
 
 
+
     if (dateController.text.length != 10) {
 
 
@@ -120,7 +134,7 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
 
 
 
-    // Kiểm tra ngày tháng năm
+
 
     List<String> date =
         dateController.text.split("/");
@@ -132,6 +146,7 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
     int month = int.parse(date[1]);
 
     int year = int.parse(date[2]);
+
 
 
 
@@ -159,6 +174,7 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
 
 
 
+
     if (month < 1 || month > 12) {
 
 
@@ -178,6 +194,7 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
       return;
 
     }
+
 
 
 
@@ -205,6 +222,21 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
 
 
 
+
+    // Lưu dữ liệu vào service
+    WeightService.addWeight(
+
+      dateController.text,
+
+      "${weightController.text} kg",
+
+    );
+
+
+
+
+
+
     ScaffoldMessenger.of(context).showSnackBar(
 
       SnackBar(
@@ -221,6 +253,8 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
 
 
 
+
+
     weightController.clear();
 
     dateController.clear();
@@ -231,40 +265,57 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
 
 
 
+
+
+
   @override
   Widget build(BuildContext context) {
 
 
     return Scaffold(
 
+
       appBar: AppBar(
+
 
         title: const Text(
           "Thêm cân nặng",
         ),
 
+
       ),
+
+
 
 
 
       body: Padding(
 
+
         padding: const EdgeInsets.all(16),
+
+
 
 
 
         child: Column(
 
+
           children: [
+
+
 
 
 
             TextField(
 
+
               controller: dateController,
 
 
+
               keyboardType: TextInputType.number,
+
 
 
               onChanged: formatDate,
@@ -273,10 +324,15 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
 
               decoration: const InputDecoration(
 
-                labelText: "Ngày cân (DD/MM/YYYY)",
+
+                labelText:
+                    "Ngày cân (DD/MM/YYYY)",
 
 
-                hintText: "Ví dụ: 27/07/2026",
+
+                hintText:
+                    "Ví dụ: 27/07/2026",
+
 
 
 
@@ -286,11 +342,17 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
 
 
 
-                border: OutlineInputBorder(),
+                border:
+                    OutlineInputBorder(),
+
+
 
               ),
 
+
             ),
+
+
 
 
 
@@ -301,21 +363,34 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
 
 
 
+
             TextField(
+
+
 
               controller: weightController,
 
 
-              keyboardType: TextInputType.number,
+
+              keyboardType:
+                  TextInputType.number,
 
 
 
               decoration: const InputDecoration(
 
-                labelText: "Cân nặng (kg)",
 
 
-                hintText: "Ví dụ: 12.5",
+                labelText:
+                    "Cân nặng (kg)",
+
+
+
+
+                hintText:
+                    "Ví dụ: 12.5",
+
+
 
 
 
@@ -325,11 +400,19 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
 
 
 
-                border: OutlineInputBorder(),
+
+                border:
+                    OutlineInputBorder(),
+
+
 
               ),
 
+
+
             ),
+
+
 
 
 
@@ -340,37 +423,58 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
 
 
 
+
             SizedBox(
 
-              width: double.infinity,
+
+              width:
+                  double.infinity,
 
 
 
               child: ElevatedButton(
 
-                onPressed: saveWeight,
+
+
+                onPressed:
+                    saveWeight,
 
 
 
-                child: const Text(
-                  "Lưu",
-                ),
+                child:
+                    const Text(
+                      "Lưu",
+                    ),
+
+
 
               ),
+
+
 
             ),
 
 
 
+
+
           ],
+
+
 
         ),
 
+
+
       ),
+
+
 
     );
 
+
   }
+
 
 
 }
