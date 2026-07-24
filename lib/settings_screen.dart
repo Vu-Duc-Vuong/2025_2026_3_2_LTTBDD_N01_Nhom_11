@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'theme_notifier.dart';
+import 'user_profile_screen.dart';
+import 'about_team_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -18,8 +20,9 @@ class SettingsScreen extends StatelessWidget {
             title: const Text('Hồ sơ'),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Sắp ra mắt: Hồ sơ')),
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const UserProfileScreen()),
               );
             },
           ),
@@ -35,17 +38,17 @@ class SettingsScreen extends StatelessWidget {
             },
           ),
           const Divider(),
-          // ĐOẠN NÀY LÀ CỦA DARK MODE
           ValueListenableBuilder<ThemeMode>(
             valueListenable: themeNotifier,
             builder: (context, currentMode, child) {
+              final isDark = currentMode == ThemeMode.dark;
               return ListTile(
                 leading: const Icon(Icons.dark_mode),
                 title: const Text('Dark Mode'),
                 trailing: Switch(
-                  value: currentMode == ThemeMode.dark,
+                  value: isDark,
                   onChanged: (bool value) {
-                    // Đổi trạng thái khi bấm công tắc
+                    // Cập nhật trạng thái giao diện toàn app
                     themeNotifier.value = value ? ThemeMode.dark : ThemeMode.light;
                   },
                 ),
@@ -58,8 +61,9 @@ class SettingsScreen extends StatelessWidget {
             title: const Text('Giới thiệu nhóm'),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Sắp ra mắt: Giới thiệu nhóm')),
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AboutTeamScreen()),
               );
             },
           ),
