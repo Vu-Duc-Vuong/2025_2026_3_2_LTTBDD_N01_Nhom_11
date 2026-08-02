@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/pet_model.dart';
-import 'health_screen.dart';
+import 'weight_screen.dart';
 
 
 class SelectPetWeightScreen extends StatelessWidget {
@@ -67,6 +67,7 @@ class SelectPetWeightScreen extends StatelessWidget {
               ),
 
 
+
               onTap: (){
 
 
@@ -76,7 +77,7 @@ class SelectPetWeightScreen extends StatelessWidget {
 
                   MaterialPageRoute(
 
-                    builder: (_) => HealthScreen(
+                    builder: (_) => WeightScreen(
                       pet: pet,
                     ),
 

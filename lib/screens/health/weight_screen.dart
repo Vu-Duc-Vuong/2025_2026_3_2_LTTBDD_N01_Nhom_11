@@ -1,620 +1,216 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+
 import 'add_weight_screen.dart';
 import '../../services/weight_service.dart';
+import '../../models/pet_model.dart';
 
 class WeightScreen extends StatefulWidget {
-  const WeightScreen({super.key});
+  final Pet pet;
+
+  const WeightScreen({super.key, required this.pet});
 
   @override
   State<WeightScreen> createState() => _WeightScreenState();
 }
 
 class _WeightScreenState extends State<WeightScreen> {
-
-
-  List<FlSpot> getChartData() {
-
+  List<FlSpot> getChartData(List weightList) {
     List<FlSpot> spots = [];
 
-    for(int i = 0; i < WeightService.weightList.length; i++) {
+    for (int i = 0; i < weightList.length; i++) {
+      double weight = double.parse(weightList[i].weight.replaceAll(" kg", ""));
 
-      double weight = double.parse(
-        WeightService.weightList[i]
-            .weight
-            .replaceAll(" kg", ""),
-      );
-
-
-      spots.add(
-        FlSpot(
-          i.toDouble(),
-          weight,
-        ),
-      );
-
+      spots.add(FlSpot(i.toDouble(), weight));
     }
 
     return spots;
   }
 
-
-
-
-
-  double getMinWeight(){
-
-    if(WeightService.weightList.isEmpty){
+  double getMinWeight(List weightList) {
+    if (weightList.isEmpty) {
       return 0;
     }
 
+    double min = double.parse(weightList[0].weight.replaceAll(" kg", ""));
 
-    double min = double.parse(
-      WeightService.weightList[0]
-          .weight
-          .replaceAll(" kg", ""),
-    );
+    for (var item in weightList) {
+      double value = double.parse(item.weight.replaceAll(" kg", ""));
 
-
-    for(var item in WeightService.weightList){
-
-      double value = double.parse(
-        item.weight.replaceAll(" kg", ""),
-      );
-
-
-      if(value < min){
+      if (value < min) {
         min = value;
       }
-
     }
 
-
     return min - 1;
-
   }
 
-
-
-
-
-  double getMaxWeight(){
-
-    if(WeightService.weightList.isEmpty){
+  double getMaxWeight(List weightList) {
+    if (weightList.isEmpty) {
       return 10;
     }
 
+    double max = double.parse(weightList[0].weight.replaceAll(" kg", ""));
 
-    double max = double.parse(
-      WeightService.weightList[0]
-          .weight
-          .replaceAll(" kg", ""),
-    );
+    for (var item in weightList) {
+      double value = double.parse(item.weight.replaceAll(" kg", ""));
 
-
-    for(var item in WeightService.weightList){
-
-      double value = double.parse(
-        item.weight.replaceAll(" kg", ""),
-      );
-
-
-      if(value > max){
+      if (value > max) {
         max = value;
       }
-
     }
 
-
     return max + 1;
-
   }
-
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
-
-
-    final weightList = WeightService.weightList;
-
-
+    final weightList = WeightService.weightList
+        .where((item) => item.petId == widget.pet.id)
+        .toList();
 
     return Scaffold(
-
-      appBar: AppBar(
-       title: const Text(
-  "Cân nặng",
-),
-      ),
-
-
-
+      appBar: AppBar(title: Text("Cân nặng - ${widget.pet.name}")),
 
       body: Padding(
-
         padding: const EdgeInsets.all(16),
 
-
-
         child: Column(
-
           crossAxisAlignment: CrossAxisAlignment.start,
 
           children: [
-SizedBox(
-  width: double.infinity,
-  child: ElevatedButton.icon(
-    icon: const Icon(Icons.add),
-    label: const Text("Thêm cân nặng"),
-    onPressed: () async {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const AddWeightScreen(),
-        ),
-      );
+            // THÔNG TIN PET
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.pets, size: 40),
 
-      setState(() {});
-    },
-  ),
-),
+                title: Text(
+                  widget.pet.name,
 
-const SizedBox(height: 20),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
 
-            const Text(
+                subtitle: Text("${widget.pet.species} - ${widget.pet.breed}"),
 
-              "Biểu đồ cân nặng",
+                trailing: Text(
+                  "${widget.pet.weight} kg",
 
-              style: TextStyle(
-
-                fontSize:20,
-
-                fontWeight: FontWeight.bold,
-
+                  style: const TextStyle(
+                    color: Colors.teal,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-
             ),
 
-
-
-
-            const SizedBox(height:15),
-
-
-
-
+            const SizedBox(height: 15),
 
             SizedBox(
+              width: double.infinity,
 
-              height:220,
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.add),
 
+                label: const Text("Thêm cân nặng"),
 
-              child:
+                onPressed: () async {
+                  await Navigator.push(
+                    context,
 
-              weightList.isEmpty
-
-                  ?
-
-              const Center(
-
-                child: Text(
-                  "Chưa có dữ liệu",
-                ),
-
-              )
-
-                  :
-
-              LineChart(
-
-                LineChartData(
-
-
-
-                  minX:0,
-
-                  maxX:
-                  (weightList.length - 1).toDouble(),
-
-
-
-
-                  minY:getMinWeight(),
-
-
-                  maxY:getMaxWeight(),
-
-
-
-
-
-                  gridData:
-
-                  const FlGridData(
-                    show:true,
-                  ),
-
-
-
-
-
-                  titlesData:
-
-                  FlTitlesData(
-
-
-
-                    leftTitles:
-
-                    AxisTitles(
-
-                      sideTitles:
-
-                      SideTitles(
-
-                        showTitles:true,
-
-                        reservedSize:40,
-
-                        interval:1,
-
-                      ),
-
+                    MaterialPageRoute(
+                      builder: (_) => AddWeightScreen(pet: widget.pet),
                     ),
+                  );
 
-
-
-
-
-                    bottomTitles:
-
-                    AxisTitles(
-
-                      sideTitles:
-
-                      SideTitles(
-
-                        showTitles:true,
-
-                        reservedSize:35,
-
-                        interval:1,
-
-
-                        getTitlesWidget:
-
-                            (value, meta){
-
-
-                          int index = value.round();
-
-
-
-                          if(index >=0 &&
-                              index < weightList.length){
-
-
-
-                            return SideTitleWidget(
-
-                              axisSide: meta.axisSide,
-
-
-                              child:
-
-                              Text(
-
-                                weightList[index]
-                                    .date
-                                    .substring(0,5),
-
-
-                                style:
-
-                                const TextStyle(
-
-                                  fontSize:10,
-
-                                ),
-
-                              ),
-
-                            );
-
-
-                          }
-
-
-                          return const SizedBox();
-
-                        },
-
-
-                      ),
-
-                    ),
-
-
-
-
-
-                    rightTitles:
-
-                    const AxisTitles(
-
-                      sideTitles:
-
-                      SideTitles(
-
-                        showTitles:false,
-
-                      ),
-
-                    ),
-
-
-
-
-
-                    topTitles:
-
-                    const AxisTitles(
-
-                      sideTitles:
-
-                      SideTitles(
-
-                        showTitles:false,
-
-                      ),
-
-                    ),
-
-
-
-                  ),
-
-
-
-
-
-                  borderData:
-
-                  FlBorderData(
-
-                    show:true,
-
-                  ),
-
-
-
-
-
-                  lineBarsData: [
-
-
-
-                    LineChartBarData(
-
-
-                      spots:getChartData(),
-
-
-                      isCurved:true,
-
-
-                      barWidth:3,
-
-
-                      dotData:
-
-                      const FlDotData(
-
-                        show:true,
-
-                      ),
-
-
-                    ),
-
-
-                  ],
-
-
-
-
-
-                  lineTouchData:
-
-                  LineTouchData(
-
-
-                    touchTooltipData:
-
-                    LineTouchTooltipData(
-
-
-                      getTooltipItems:
-
-                          (spots){
-
-
-
-                        return spots.map((spot){
-
-
-                          int index =
-                          spot.x.toInt();
-
-
-
-                          return LineTooltipItem(
-
-
-                            "${weightList[index].date}\n"
-                                "${spot.y} kg",
-
-
-
-                            const TextStyle(
-
-                              fontWeight:
-                              FontWeight.bold,
-
-                            ),
-
-
-                          );
-
-
-                        }).toList();
-
-
-
-                      },
-
-
-                    ),
-
-
-                  ),
-
-
-
-
-                ),
-
+                  setState(() {});
+                },
               ),
-
-
             ),
 
-
-
-
-
-
-
-            const SizedBox(height:25),
-
-
-
-
-
+            const SizedBox(height: 20),
 
             const Text(
+              "Biểu đồ cân nặng",
 
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+
+            const SizedBox(height: 15),
+
+            SizedBox(
+              height: 220,
+
+              child: weightList.isEmpty
+                  ? const Center(child: Text("Chưa có dữ liệu"))
+                  : LineChart(
+                      LineChartData(
+                        minX: 0,
+
+                        maxX: (weightList.length - 1).toDouble(),
+
+                        minY: getMinWeight(weightList),
+
+                        maxY: getMaxWeight(weightList),
+
+                        gridData: const FlGridData(show: true),
+
+                        lineBarsData: [
+                          LineChartBarData(
+                            spots: getChartData(weightList),
+
+                            isCurved: true,
+
+                            barWidth: 3,
+
+                            dotData: const FlDotData(show: true),
+                          ),
+                        ],
+                      ),
+                    ),
+            ),
+
+            const SizedBox(height: 25),
+
+            const Text(
               "Lịch sử cân nặng",
 
-
-              style:
-
-              TextStyle(
-
-                fontSize:20,
-
-                fontWeight:FontWeight.bold,
-
-              ),
-
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
 
-
-
-
-
-            const SizedBox(height:15),
-
-
-
-
-
+            const SizedBox(height: 10),
 
             Expanded(
+              child: ListView.builder(
+                itemCount: weightList.length,
 
+                itemBuilder: (context, index) {
+                  return Card(
+                    child: ListTile(
+                      leading: const Icon(
+                        Icons.monitor_weight,
+                        color: Colors.teal,
+                      ),
 
-              child:
+                      title: Text(weightList[index].date),
 
-              weightList.isEmpty
-
-
-                  ?
-
-              const Center(
-
-                child:
-
-                Text(
-                  "Chưa có dữ liệu cân nặng",
-                ),
-
-              )
-
-
-                  :
-
-              ListView.builder(
-
-
-                itemCount:weightList.length,
-
-
-                itemBuilder:(context,index){
-
-
-                 return Card(
-  margin: const EdgeInsets.only(bottom: 10),
-  child: ListTile(
-    leading: const Icon(
-      Icons.monitor_weight,
-      color: Colors.teal,
-    ),
-    title: Text(
-      weightList[index].date,
-      style: const TextStyle(
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-    trailing: Text(
-      weightList[index].weight,
-      style: const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.bold,
-        color: Colors.teal,
-      ),
-    ),
-  ),
-);
-
-
-
+                      trailing: Text(
+                        weightList[index].weight,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal,
+                        ),
+                      ),
+                    ),
+                  );
                 },
-
-
               ),
-
-
             ),
-
-
-
           ],
-
-
         ),
-
-
       ),
-
-
     );
-
-
   }
-
-
 }
