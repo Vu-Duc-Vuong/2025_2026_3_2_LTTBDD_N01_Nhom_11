@@ -5,6 +5,7 @@ import '../vaccine/vaccine_schedule_screen.dart';
 import '../gallery/gallery_screen.dart';
 import '../../settings_screen.dart';
 import '../../language_notifier.dart';
+import '../health/health_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -77,7 +78,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 Text(
-                  isEnglish ? "Pet care & love" : "Yêu thương & chăm sóc thú cưng",
+                  isEnglish
+                      ? "Pet care & love"
+                      : "Yêu thương & chăm sóc thú cưng",
                   style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
               ],
@@ -85,10 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
             actions: const [
               Padding(
                 padding: EdgeInsets.only(right: 15),
-                child: Icon(
-                  Icons.notifications_none,
-                  size: 30,
-                ),
+                child: Icon(Icons.notifications_none, size: 30),
               ),
             ],
           ),
@@ -117,7 +117,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       menu(
                         context,
                         Icons.pets,
-                        isEnglish ? "Pets\n${petList.length}" : "Thú cưng\n${petList.length}",
+                        isEnglish
+                            ? "Pets\n${petList.length}"
+                            : "Thú cưng\n${petList.length}",
                         Colors.teal,
                         _openPetManagement,
                       ),
@@ -130,7 +132,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const VaccineScheduleScreen(),
+                              builder: (context) =>
+                                  const VaccineScheduleScreen(),
                             ),
                           );
                         },
@@ -140,7 +143,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         Icons.monitor_weight,
                         isEnglish ? "Weight" : "Cân nặng",
                         Colors.orange,
-                        () {},
+                        () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const HealthScreen(),
+                            ),
+                          );
+                        },
                       ),
                       menu(
                         context,
@@ -161,7 +171,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 25),
 
                   // Lịch sắp tới
-                  rowTitle(isEnglish ? "Upcoming Schedule" : "Lịch sắp tới", isEnglish),
+                  rowTitle(
+                    isEnglish ? "Upcoming Schedule" : "Lịch sắp tới",
+                    isEnglish,
+                  ),
                   const SizedBox(height: 10),
                   scheduleCard(
                     "Milo",
@@ -178,13 +191,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 25),
 
                   // Cân nặng gần nhất
-                  rowTitle(isEnglish ? "Latest Weight" : "Cân nặng gần nhất", isEnglish),
+                  rowTitle(
+                    isEnglish ? "Latest Weight" : "Cân nặng gần nhất",
+                    isEnglish,
+                  ),
                   const SizedBox(height: 15),
                   Row(
                     children: [
-                      Expanded(child: weightCard("Lucky", "3.5 kg", "01/05/2024")),
+                      Expanded(
+                        child: weightCard("Lucky", "3.5 kg", "01/05/2024"),
+                      ),
                       const SizedBox(width: 10),
-                      Expanded(child: weightCard("Milo", "4.2 kg", "28/04/2024")),
+                      Expanded(
+                        child: weightCard("Milo", "4.2 kg", "28/04/2024"),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 30),
@@ -197,7 +217,8 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: _openPetManagement,
             child: const Icon(Icons.add),
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
           bottomNavigationBar: BottomAppBar(
             shape: const CircularNotchedRectangle(),
             notchMargin: 8,
