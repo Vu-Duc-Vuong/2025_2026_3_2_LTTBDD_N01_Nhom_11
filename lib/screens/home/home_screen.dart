@@ -5,7 +5,7 @@ import '../vaccine/vaccine_schedule_screen.dart';
 import '../gallery/gallery_screen.dart';
 import '../../settings_screen.dart';
 import '../../language_notifier.dart';
-import '../health/health_screen.dart';
+import '../health/select_pet_weight_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -147,7 +147,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => HealthScreen(pet: petList[0]),
+                              builder: (_) =>
+                                  SelectPetWeightScreen(petList: petList),
                             ),
                           );
                         },
