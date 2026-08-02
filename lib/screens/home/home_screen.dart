@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 import '../../models/pet_model.dart';
 import '../pet_management/pet_management_screen.dart';
 import '../vaccine/vaccine_schedule_screen.dart';
@@ -7,6 +8,7 @@ import '../../settings_screen.dart';
 import '../../language_notifier.dart';
 import '../health/select_pet_weight_screen.dart';
 import '../../services/weight_service.dart';
+import '../../models/weight_model.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -102,21 +104,49 @@ class _HomeScreenState extends State<HomeScreen> {
     return double.tryParse(cleaned) ?? 0;
   }
 
-  List<_WeightChartPoint> _buildWeightChartData() {
-    final petNameById = {for (final pet in petList) pet.id: pet.name};
-    final points = WeightService.weightList
-        .where((item) => petNameById.containsKey(item.petId))
-        .map(
-          (item) => _WeightChartPoint(
-            petName: petNameById[item.petId]!,
-            date: item.date,
-            dateTime: _parseDate(item.date),
-            weight: _parseWeight(item.weight),
-          ),
-        )
+  List<WeightModel> _getLatestPetWeightList() {
+    if (WeightService.weightList.isEmpty) return [];
+
+    final latestRecord = WeightService.weightList.reduce((current, next) {
+      final currentDate = _parseDate(current.date);
+      final nextDate = _parseDate(next.date);
+      return nextDate.isAfter(currentDate) ? next : current;
+    });
+
+    final petWeights = WeightService.weightList
+        .where((item) => item.petId == latestRecord.petId)
         .toList();
-    points.sort((a, b) => a.dateTime.compareTo(b.dateTime));
-    return points;
+    petWeights.sort((a, b) => _parseDate(a.date).compareTo(_parseDate(b.date)));
+    return petWeights;
+  }
+
+  List<FlSpot> _getLineChartData(List<WeightModel> weightList) {
+    final spots = <FlSpot>[];
+    for (int i = 0; i < weightList.length; i++) {
+      final weight = _parseWeight(weightList[i].weight);
+      spots.add(FlSpot(i.toDouble(), weight));
+    }
+    return spots;
+  }
+
+  double _getMinWeight(List<WeightModel> weightList) {
+    if (weightList.isEmpty) return 0;
+    var min = _parseWeight(weightList.first.weight);
+    for (final item in weightList) {
+      final value = _parseWeight(item.weight);
+      if (value < min) min = value;
+    }
+    return min - 1;
+  }
+
+  double _getMaxWeight(List<WeightModel> weightList) {
+    if (weightList.isEmpty) return 10;
+    var max = _parseWeight(weightList.first.weight);
+    for (final item in weightList) {
+      final value = _parseWeight(item.weight);
+      if (value > max) max = value;
+    }
+    return max + 1;
   }
 
   @override
@@ -299,7 +329,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.vaccines),
-                label: 'Lịch tiêm',
+                label: 'Lịch tiêm +',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.notifications_none),
@@ -394,8 +424,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildWeightChartCard(bool isEnglish) {
-    final points = _buildWeightChartData();
-    if (points.isEmpty) {
+    final petNameById = {for (final pet in petList) pet.id: pet.name};
+    final latestPetWeightList = _getLatestPetWeightList();
+    if (latestPetWeightList.isEmpty) {
       return Card(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -407,7 +438,8 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
-    final latest = points.last;
+    final latest = latestPetWeightList.last;
+    final petName = petNameById[latest.petId] ?? latest.petId;
 
     return Card(
       child: Padding(
@@ -417,100 +449,44 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Text(
               isEnglish
-                  ? 'Latest: ${latest.petName} - ${latest.weight.toStringAsFixed(1)} kg (${latest.date})'
-                  : 'Mới nhất: ${latest.petName} - ${latest.weight.toStringAsFixed(1)} kg (${latest.date})',
+                  ? 'Weight chart: $petName'
+                  : 'Biểu đồ cân nặng: $petName',
               style: const TextStyle(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 10),
             SizedBox(
-              height: 180,
+              height: 150,
               width: double.infinity,
-              child: CustomPaint(painter: _WeightChartPainter(points: points)),
+              child: LineChart(
+                LineChartData(
+                  minX: 0,
+                  maxX: (latestPetWeightList.length - 1).toDouble(),
+                  minY: _getMinWeight(latestPetWeightList),
+                  maxY: _getMaxWeight(latestPetWeightList),
+                  gridData: const FlGridData(show: true),
+                  titlesData: const FlTitlesData(show: false),
+                  borderData: FlBorderData(show: false),
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: _getLineChartData(latestPetWeightList),
+                      isCurved: true,
+                      barWidth: 3,
+                      dotData: const FlDotData(show: true),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              isEnglish
+                  ? 'Latest: ${latest.weight} - ${latest.date}'
+                  : 'Mới nhất: ${latest.weight} - ${latest.date}',
+              style: const TextStyle(color: Colors.grey),
             ),
           ],
         ),
       ),
     );
-  }
-}
-
-class _WeightChartPoint {
-  final String petName;
-  final String date;
-  final DateTime dateTime;
-  final double weight;
-
-  const _WeightChartPoint({
-    required this.petName,
-    required this.date,
-    required this.dateTime,
-    required this.weight,
-  });
-}
-
-class _WeightChartPainter extends CustomPainter {
-  final List<_WeightChartPoint> points;
-
-  _WeightChartPainter({required this.points});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (points.isEmpty) return;
-
-    final minWeight = points
-        .map((e) => e.weight)
-        .reduce((a, b) => a < b ? a : b);
-    final maxWeight = points
-        .map((e) => e.weight)
-        .reduce((a, b) => a > b ? a : b);
-    final range = (maxWeight - minWeight).abs() < 0.001
-        ? 1.0
-        : (maxWeight - minWeight);
-
-    const leftPadding = 10.0;
-    const rightPadding = 10.0;
-    const topPadding = 12.0;
-    const bottomPadding = 18.0;
-    final chartWidth = size.width - leftPadding - rightPadding;
-    final chartHeight = size.height - topPadding - bottomPadding;
-    final stepX = points.length == 1 ? 0.0 : chartWidth / (points.length - 1);
-
-    final gridPaint = Paint()
-      ..color = Colors.grey.shade300
-      ..strokeWidth = 1;
-    for (int i = 0; i < 4; i++) {
-      final y = topPadding + chartHeight * (i / 3);
-      canvas.drawLine(
-        Offset(leftPadding, y),
-        Offset(size.width - rightPadding, y),
-        gridPaint,
-      );
-    }
-
-    final linePaint = Paint()
-      ..color = Colors.teal
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.5;
-
-    final dotPaint = Paint()..color = Colors.orange;
-
-    final path = Path();
-    for (int i = 0; i < points.length; i++) {
-      final x = leftPadding + stepX * i;
-      final normalizedY = (points[i].weight - minWeight) / range;
-      final y = topPadding + chartHeight * (1 - normalizedY);
-      if (i == 0) {
-        path.moveTo(x, y);
-      } else {
-        path.lineTo(x, y);
-      }
-      canvas.drawCircle(Offset(x, y), 3.5, dotPaint);
-    }
-    canvas.drawPath(path, linePaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant _WeightChartPainter oldDelegate) {
-    return oldDelegate.points != points;
   }
 }
