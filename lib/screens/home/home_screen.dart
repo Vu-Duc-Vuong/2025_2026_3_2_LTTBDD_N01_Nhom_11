@@ -40,6 +40,18 @@ class _HomeScreenState extends State<HomeScreen> {
       ownerName: "Nguyễn Văn A",
       phone: "0901234567",
     ),
+    Pet(
+      id: '3',
+      name: "Bông",
+      species: "Mèo",
+      breed: "Mèo ta",
+      gender: "Cái",
+      birthDate: "15/02/2023",
+      color: "Trắng vàng",
+      weight: 3.8,
+      ownerName: "Nguyễn Văn A",
+      phone: "0901234567",
+    ),
   ];
 
   void _openPetManagement() async {
@@ -132,8 +144,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  const VaccineScheduleScreen(),
+                              builder: (context) => VaccineScheduleScreen(
+                                petNames: petList
+                                    .map((pet) => pet.name)
+                                    .toList(),
+                              ),
                             ),
                           );
                         },

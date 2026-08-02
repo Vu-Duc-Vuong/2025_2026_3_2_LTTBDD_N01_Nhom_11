@@ -268,26 +268,27 @@ class _VaccinationScreenState extends State<VaccinationScreen> {
 
 
 
-    VaccinationService.addVaccination(
+VaccinationService.addVaccination(
 
-      VaccinationModel(
+  VaccinationModel(
 
-        name:
-        nameController.text,
+    petName: "Milo",
 
+    name: nameController.text,
 
-        date:
-        dateController.text,
+    date: dateController.text,
 
+    doctor: "Dr. An",
 
-        status:
-        statusController.text,
+    status: statusController.text,
 
+    repeatDate: "Chưa có",
 
-      ),
+    note: "",
 
-    );
+  ),
 
+);
 
 
 
