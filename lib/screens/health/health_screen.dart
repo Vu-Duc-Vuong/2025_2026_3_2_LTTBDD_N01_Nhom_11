@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'weight_screen.dart';
-import 'add_weight_screen.dart';
 import 'vaccination_screen.dart';
 import '../../settings_screen.dart';
 
@@ -45,9 +44,7 @@ class HealthScreen extends StatelessWidget {
                 subtitle: Text("Golden Retriever - 2 tuổi"),
               ),
             ),
-
             const SizedBox(height: 20),
-
             const Text(
               "Theo dõi sức khỏe",
               style: TextStyle(
@@ -55,9 +52,7 @@ class HealthScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-
             const SizedBox(height: 10),
-
             Row(
               children: [
                 Expanded(
@@ -116,30 +111,6 @@ class HealthScreen extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
-
-            const SizedBox(height: 25),
-
-            const Text(
-              "Chức năng",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            ListTile(
-              leading: const Icon(Icons.add),
-              title: const Text("Thêm cân nặng"),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const AddWeightScreen(),
-                  ),
-                );
-              },
             ),
           ],
         ),
