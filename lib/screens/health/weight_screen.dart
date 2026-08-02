@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-
+import 'add_weight_screen.dart';
 import '../../services/weight_service.dart';
 
 class WeightScreen extends StatefulWidget {
@@ -126,9 +126,9 @@ class _WeightScreenState extends State<WeightScreen> {
     return Scaffold(
 
       appBar: AppBar(
-        title: const Text(
-          "Danh sách cân nặng",
-        ),
+       title: const Text(
+  "Cân nặng",
+),
       ),
 
 
@@ -145,7 +145,25 @@ class _WeightScreenState extends State<WeightScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
 
           children: [
+SizedBox(
+  width: double.infinity,
+  child: ElevatedButton.icon(
+    icon: const Icon(Icons.add),
+    label: const Text("Thêm cân nặng"),
+    onPressed: () async {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const AddWeightScreen(),
+        ),
+      );
 
+      setState(() {});
+    },
+  ),
+),
+
+const SizedBox(height: 20),
 
             const Text(
 
@@ -548,66 +566,30 @@ class _WeightScreenState extends State<WeightScreen> {
                 itemBuilder:(context,index){
 
 
-                  return Card(
+                 return Card(
+  margin: const EdgeInsets.only(bottom: 10),
+  child: ListTile(
+    leading: const Icon(
+      Icons.monitor_weight,
+      color: Colors.teal,
+    ),
+    title: Text(
+      weightList[index].date,
+      style: const TextStyle(
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+    trailing: Text(
+      weightList[index].weight,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: Colors.teal,
+      ),
+    ),
+  ),
+);
 
-
-                    child:
-
-                    ListTile(
-
-
-                      leading:
-
-                      const Icon(
-
-                        Icons.monitor_weight,
-
-                        size:35,
-
-                      ),
-
-
-
-
-                      title:
-
-                      Text(
-
-                        weightList[index].weight,
-
-
-                        style:
-
-                        const TextStyle(
-
-                          fontSize:18,
-
-                          fontWeight:
-                          FontWeight.bold,
-
-                        ),
-
-
-                      ),
-
-
-
-
-
-                      subtitle:
-
-                      Text(
-
-                        "Ngày cân: ${weightList[index].date}",
-
-                      ),
-
-
-
-                    ),
-
-
-                  );
 
 
                 },
