@@ -1,8 +1,9 @@
 class WeightModel {
 
   final String petId;
-  final String date;
-  final String weight;
+
+  String date;
+  String weight;
 
 
   WeightModel({

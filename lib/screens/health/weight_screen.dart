@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-
+import 'edit_weight_screen.dart';
 import 'add_weight_screen.dart';
 import '../../services/weight_service.dart';
 import '../../models/pet_model.dart';
@@ -196,12 +196,73 @@ class _WeightScreenState extends State<WeightScreen> {
 
                       title: Text(weightList[index].date),
 
-                      trailing: Text(
-                        weightList[index].weight,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.teal,
-                        ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            weightList[index].weight,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.teal,
+                            ),
+                          ),
+
+                          PopupMenuButton<String>(
+                            onSelected: (value) {
+                              if (value == "edit") {
+                                Navigator.push(
+                                  context,
+
+                                  MaterialPageRoute(
+                                    builder: (_) => EditWeightScreen(
+                                      weight: weightList[index],
+                                    ),
+                                  ),
+                                ).then((value) {
+                                  setState(() {});
+                                });
+                              }
+
+                              if (value == "delete") {
+                                setState(() {
+                                  WeightService.weightList.remove(
+                                    weightList[index],
+                                  );
+                                });
+                              }
+                            },
+
+                            itemBuilder: (context) => [
+                              const PopupMenuItem(
+                                value: "edit",
+
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.edit, color: Colors.blue),
+
+                                    SizedBox(width: 10),
+
+                                    Text("Chỉnh sửa"),
+                                  ],
+                                ),
+                              ),
+
+                              const PopupMenuItem(
+                                value: "delete",
+
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.delete, color: Colors.red),
+
+                                    SizedBox(width: 10),
+
+                                    Text("Xóa"),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   );
