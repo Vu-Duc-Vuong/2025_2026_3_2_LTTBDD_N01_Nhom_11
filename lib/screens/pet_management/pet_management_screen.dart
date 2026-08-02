@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart'; // Import để sử dụng kIsWeb
 import 'package:flutter/material.dart';
 import '../../models/pet_model.dart';
 import 'add_pet_screen.dart';
+import '../health/pet_profile_screen.dart';
 
 class PetManagementScreen extends StatefulWidget {
   final List<Pet> petList;
@@ -237,77 +238,85 @@ class _PetManagementScreenState extends State<PetManagementScreen> {
                 itemBuilder: (context, index) {
                   final pet = pets[index];
 
-                  return Card(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 0,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Row(
-                        children: [
-                          // Widget hiển thị ảnh avatar đã cập nhật
-                          _buildPetAvatar(pet.imagePath, size: 64),
-                          const SizedBox(width: 15),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  pet.name,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                  return InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => PetProfileScreen(pet: pet),
+                        ),
+                      );
+                    },
+                    child: Card(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Row(
+                          children: [
+                            _buildPetAvatar(pet.imagePath, size: 64),
+                            const SizedBox(width: 15),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    pet.name,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  "${pet.species} - ${pet.breed}",
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 13,
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    "${pet.species} - ${pet.breed}",
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 13,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  "${pet.weight} kg",
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 13,
+                                  Text(
+                                    "${pet.weight} kg",
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 13,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          // Nút Sửa
-                          IconButton(
-                            icon: const Icon(
-                              Icons.edit_outlined,
-                              color: Colors.teal,
+                            IconButton(
+                              icon: const Icon(
+                                Icons.edit_outlined,
+                                color: Colors.teal,
+                              ),
+                              onPressed: () async {
+                                final updatedPet = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => AddEditPetScreen(pet: pet),
+                                  ),
+                                );
+                                if (updatedPet != null && updatedPet is Pet) {
+                                  setState(() {
+                                    pets[index] = updatedPet;
+                                  });
+                                }
+                              },
                             ),
-                            onPressed: () async {
-                              final updatedPet = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => AddEditPetScreen(pet: pet),
-                                ),
-                              );
-                              if (updatedPet != null && updatedPet is Pet) {
-                                setState(() {
-                                  pets[index] = updatedPet;
-                                });
-                              }
-                            },
-                          ),
-                          // Nút Xóa
-                          IconButton(
-                            icon: const Icon(
-                              Icons.delete_outline,
-                              color: Colors.red,
+                            IconButton(
+                              icon: const Icon(
+                                Icons.delete_outline,
+                                color: Colors.red,
+                              ),
+                              onPressed: () => _confirmDelete(pet, index),
                             ),
-                            onPressed: () => _confirmDelete(pet, index),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   );
