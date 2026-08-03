@@ -9,6 +9,7 @@ import '../../language_notifier.dart';
 import '../health/select_pet_weight_screen.dart';
 import '../../services/weight_service.dart';
 import '../../models/weight_model.dart';
+import '../../services/vaccination_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -256,18 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onTap: _openVaccineSchedule,
                   ),
                   const SizedBox(height: 10),
-                  scheduleCard(
-                    "Milo",
-                    isEnglish ? "Rabies Vaccine" : "Tiêm Vaccine Dại",
-                    "01/06/2024",
-                    isEnglish ? "In 2 days" : "2 ngày nữa",
-                  ),
-                  scheduleCard(
-                    "Bông",
-                    isEnglish ? "5-in-1 Vaccine" : "Tiêm Vaccine 5 bệnh",
-                    "05/06/2024",
-                    isEnglish ? "In 6 days" : "6 ngày nữa",
-                  ),
+                  ..._buildVaccinationReminderCards(isEnglish),
                   const SizedBox(height: 25),
 
                   // Cân nặng gần nhất
@@ -303,15 +293,7 @@ class _HomeScreenState extends State<HomeScreen> {
               } else if (index == 2) {
                 _openVaccineSchedule();
               } else if (index == 3) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      isEnglish
-                          ? 'No notifications yet.'
-                          : 'Hiện chưa có thông báo.',
-                    ),
-                  ),
-                );
+                _showVaccinationNotifications(context, isEnglish);
               } else if (index == 4) {
                 Navigator.push(
                   context,
@@ -402,25 +384,125 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget scheduleCard(String pet, String vaccine, String date, String remain) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 10),
-      child: ListTile(
-        leading: const CircleAvatar(child: Icon(Icons.pets)),
-        title: Text(vaccine),
-        subtitle: Text(pet),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(date),
-            Text(
-              remain,
-              style: const TextStyle(color: Colors.red, fontSize: 12),
-            ),
-          ],
-        ),
+  void _showVaccinationNotifications(BuildContext context, bool isEnglish) {
+    final reminders = VaccinationService.getUpcomingVaccinations();
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
+      builder: (_) {
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                isEnglish ? 'Vaccination reminders' : 'Thông báo lịch tiêm',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 12),
+              if (reminders.isEmpty)
+                Text(
+                  isEnglish
+                      ? 'No upcoming vaccination reminders.'
+                      : 'Không có lịch tiêm sắp tới.',
+                  style: const TextStyle(color: Colors.grey),
+                )
+              else
+                ...reminders.map(
+                  (item) => Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.teal.withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.vaccines, color: Colors.teal),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${item.petName} • ${item.name}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                '${isEnglish ? 'Date' : 'Ngày'}: ${item.date}',
+                              ),
+                              Text(
+                                item.note.isNotEmpty
+                                    ? item.note
+                                    : (isEnglish
+                                          ? 'Please prepare in advance.'
+                                          : 'Vui lòng chuẩn bị trước.'),
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
     );
+  }
+
+  List<Widget> _buildVaccinationReminderCards(bool isEnglish) {
+    final reminders = VaccinationService.getUpcomingVaccinations();
+    if (reminders.isEmpty) {
+      return [
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              isEnglish
+                  ? 'No upcoming vaccination reminders.'
+                  : 'Không có lịch tiêm sắp tới.',
+              style: const TextStyle(color: Colors.grey),
+            ),
+          ),
+        ),
+      ];
+    }
+
+    return reminders.map((item) {
+      return Card(
+        margin: const EdgeInsets.only(bottom: 10),
+        child: ListTile(
+          leading: const CircleAvatar(child: Icon(Icons.pets)),
+          title: Text(item.name),
+          subtitle: Text(item.petName),
+          trailing: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(item.date),
+              Text(
+                isEnglish ? 'Upcoming' : 'Sắp tới',
+                style: const TextStyle(color: Colors.red, fontSize: 12),
+              ),
+            ],
+          ),
+        ),
+      );
+    }).toList();
   }
 
   Widget _buildWeightChartCard(bool isEnglish) {

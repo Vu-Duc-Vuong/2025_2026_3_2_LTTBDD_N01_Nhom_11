@@ -33,6 +33,30 @@ class VaccinationService {
     ),
   ];
 
+  static DateTime _parseDate(String value) {
+    final parts = value.split('/');
+    if (parts.length != 3) return DateTime(2100);
+    final day = int.tryParse(parts[0]) ?? 1;
+    final month = int.tryParse(parts[1]) ?? 1;
+    final year = int.tryParse(parts[2]) ?? 2000;
+    return DateTime(year, month, day);
+  }
+
+  static List<VaccinationModel> getUpcomingVaccinations({DateTime? now}) {
+    final currentDate = now ?? DateTime.now();
+    final upcoming =
+        vaccinationList
+            .where((item) => item.status != 'Đã tiêm')
+            .where(
+              (item) =>
+                  _parseDate(item.date).isAfter(currentDate) ||
+                  _parseDate(item.date).isAtSameMomentAs(currentDate),
+            )
+            .toList()
+          ..sort((a, b) => _parseDate(a.date).compareTo(_parseDate(b.date)));
+    return upcoming;
+  }
+
   static void addVaccination(VaccinationModel vaccination) {
     vaccinationList.add(vaccination);
   }
