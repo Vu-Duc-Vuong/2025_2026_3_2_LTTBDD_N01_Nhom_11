@@ -110,7 +110,7 @@ class AboutTeamScreen extends StatelessWidget {
                         mssv: '24106440',
                         tasks: isEnglish 
                           ? 'Home, Pet List, Add/Edit/Delete Pet' 
-                          : 'Home, Danh sách thú cưng, Thêm / Sửa / Xóa thú cưng',
+                          : 'Làm trang Home,Danh sách thú cưng, Thêm/Sửa/Xóa thú cưng, Demo',
                       ),
                       const Divider(height: 20, color: Color(0xFFEEEEEE)),
                       _buildMemberItem(
@@ -120,7 +120,7 @@ class AboutTeamScreen extends StatelessWidget {
                         mssv: '24100383',
                         tasks: isEnglish 
                           ? 'Pet Profile, Weight, Weight Chart' 
-                          : 'Hồ sơ thú cưng, Cân nặng, Biểu đồ cân nặng',
+                          : 'Làm Hồ sơ thú cưng, Cân nặng, Biểu đồ cân nặng, slide, lịch tiêm, viết báo cáo, readme, slide, vẽ sơ đồ, kiểm thử chức năng',
                       ),
                       const Divider(height: 20, color: Color(0xFFEEEEEE)),
                       _buildMemberItem(
@@ -130,7 +130,7 @@ class AboutTeamScreen extends StatelessWidget {
                         mssv: '24100084',
                         tasks: isEnglish 
                           ? 'Vaccines, Add Vaccine, Gallery, Settings' 
-                          : 'Lịch tiêm, Thêm lịch tiêm, Thư viện ảnh, Cài đặt',
+                          : 'Thêm lịch tiêm, Thư viện ảnh, cài đặt, giới thiệu nhóm, vẽ sơ đồ',
                       ),
                     ],
                   ),
