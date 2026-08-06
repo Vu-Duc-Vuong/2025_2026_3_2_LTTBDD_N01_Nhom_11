@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'language_notifier.dart';
 import 'about_team_screen.dart';
 import 'theme_notifier.dart';
+import 'user_profile_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -80,7 +81,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 leading: const Icon(Icons.person_outline),
                 title: Text(isEnglish ? 'Profile' : 'Hồ sơ'),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const UserProfileScreen(),
+                    ),
+                  );
+                },
               ),
               ListTile(
                 leading: const Icon(Icons.language),
