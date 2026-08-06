@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart'; // Thêm thư viện này để check 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../models/pet_model.dart';
+import '../../utils/language_utils.dart';
+import '../../language_notifier.dart';
 
 class AddEditPetScreen extends StatefulWidget {
   final Pet? pet;
@@ -46,8 +48,8 @@ class _AddEditPetScreenState extends State<AddEditPetScreen> {
       _phoneController.text = widget.pet!.phone;
       _noteController.text = widget.pet!.note;
 
-      selectedSpecies = widget.pet!.species;
-      selectedGender = widget.pet!.gender;
+      selectedSpecies = normalizePetSpeciesValue(widget.pet!.species);
+      selectedGender = normalizePetGenderValue(widget.pet!.gender);
       selectedDateStr = widget.pet!.birthDate;
       _selectedImagePath = widget.pet!.imagePath.isNotEmpty
           ? widget.pet!.imagePath
@@ -129,22 +131,29 @@ class _AddEditPetScreenState extends State<AddEditPetScreen> {
   @override
   Widget build(BuildContext context) {
     bool isEdit = widget.pet != null;
+    final isEnglish = languageNotifier.value == 'English';
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
-          isEdit ? "Sửa thông tin thú cưng" : "Thêm thú cưng",
-          style: const TextStyle(
-            color: Colors.black,
+          isEdit
+              ? (isEnglish ? 'Edit Pet Information' : 'Sửa thông tin thú cưng')
+              : (isEnglish ? 'Add Pet' : 'Thêm thú cưng'),
+          style: TextStyle(
+            color: colorScheme.onSurface,
             fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor:
+            theme.appBarTheme.backgroundColor ?? colorScheme.surface,
+        foregroundColor: colorScheme.onSurface,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+          icon: Icon(Icons.arrow_back_ios, color: colorScheme.onSurface),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -162,15 +171,15 @@ class _AddEditPetScreenState extends State<AddEditPetScreen> {
                       children: [
                         CircleAvatar(
                           radius: 50,
-                          backgroundColor: Colors.grey.shade200,
+                          backgroundColor: colorScheme.surfaceVariant,
                           backgroundImage: _getImageProvider(),
                           child:
                               (_webImageBytes == null &&
                                   _selectedImagePath == null)
-                              ? const Icon(
+                              ? Icon(
                                   Icons.pets,
                                   size: 40,
-                                  color: Colors.grey,
+                                  color: colorScheme.onSurfaceVariant,
                                 )
                               : null,
                         ),
@@ -195,9 +204,12 @@ class _AddEditPetScreenState extends State<AddEditPetScreen> {
                     const SizedBox(height: 8),
                     Text(
                       (_webImageBytes == null && _selectedImagePath == null)
-                          ? "Thêm ảnh"
-                          : "Đổi ảnh",
-                      style: const TextStyle(color: Colors.grey, fontSize: 13),
+                          ? (isEnglish ? 'Add photo' : 'Thêm ảnh')
+                          : (isEnglish ? 'Change photo' : 'Đổi ảnh'),
+                      style: TextStyle(
+                        color: colorScheme.onSurfaceVariant,
+                        fontSize: 13,
+                      ),
                     ),
                   ],
                 ),
@@ -205,29 +217,42 @@ class _AddEditPetScreenState extends State<AddEditPetScreen> {
             ),
             const SizedBox(height: 20),
 
-            buildTextField("Tên thú cưng *", _nameController, "Nhập tên"),
+            buildTextField(
+              isEnglish ? 'Pet name *' : 'Tên thú cưng *',
+              _nameController,
+              isEnglish ? 'Enter name' : 'Nhập tên',
+            ),
             const SizedBox(height: 15),
 
-            buildDropdown("Loài *", selectedSpecies, ["Chó", "Mèo", "Khác"], (
-              val,
-            ) {
-              setState(() => selectedSpecies = val!);
-            }),
+            buildDropdown(
+              isEnglish ? 'Species *' : 'Loài *',
+              selectedSpecies,
+              ['Chó', 'Mèo', 'Khác'],
+              (val) {
+                setState(() => selectedSpecies = val!);
+              },
+            ),
             const SizedBox(height: 15),
 
-            buildTextField("Giống", _breedController, "Nhập giống"),
+            buildTextField(
+              isEnglish ? 'Breed' : 'Giống',
+              _breedController,
+              isEnglish ? 'Enter breed' : 'Nhập giống',
+            ),
             const SizedBox(height: 15),
 
             Row(
               children: [
                 Expanded(
                   child: buildDropdown(
-                    "Giới tính *",
+                    isEnglish ? 'Gender *' : 'Giới tính *',
                     selectedGender,
-                    ["Đực", "Cái"],
+                    ['Đực', 'Cái'],
                     (val) {
                       setState(() => selectedGender = val!);
                     },
+                    isEnglish: isEnglish,
+                    isGender: true,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -235,9 +260,9 @@ class _AddEditPetScreenState extends State<AddEditPetScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Ngày sinh *",
-                        style: TextStyle(fontWeight: FontWeight.w500),
+                      Text(
+                        isEnglish ? 'Date of birth *' : 'Ngày sinh *',
+                        style: const TextStyle(fontWeight: FontWeight.w500),
                       ),
                       const SizedBox(height: 5),
                       InkWell(
@@ -261,7 +286,9 @@ class _AddEditPetScreenState extends State<AddEditPetScreen> {
                             vertical: 12,
                           ),
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey.shade300),
+                            border: Border.all(
+                              color: colorScheme.outlineVariant,
+                            ),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Row(
@@ -272,14 +299,14 @@ class _AddEditPetScreenState extends State<AddEditPetScreen> {
                                 style: TextStyle(
                                   fontSize: 13,
                                   color: selectedDateStr.contains('/')
-                                      ? Colors.black
-                                      : Colors.grey,
+                                      ? colorScheme.onSurface
+                                      : colorScheme.onSurfaceVariant,
                                 ),
                               ),
-                              const Icon(
+                              Icon(
                                 Icons.calendar_today_outlined,
                                 size: 16,
-                                color: Colors.grey,
+                                color: colorScheme.onSurfaceVariant,
                               ),
                             ],
                           ),
@@ -292,34 +319,38 @@ class _AddEditPetScreenState extends State<AddEditPetScreen> {
             ),
             const SizedBox(height: 15),
 
-            buildTextField("Màu lông", _colorController, "Nhập màu lông"),
+            buildTextField(
+              isEnglish ? 'Coat color' : 'Màu lông',
+              _colorController,
+              isEnglish ? 'Enter coat color' : 'Nhập màu lông',
+            ),
             const SizedBox(height: 15),
 
             buildTextField(
-              "Cân nặng ban đầu (kg)",
+              isEnglish ? 'Initial weight (kg)' : 'Cân nặng ban đầu (kg)',
               _weightController,
-              "Nhập cân nặng",
+              isEnglish ? 'Enter weight' : 'Nhập cân nặng',
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 15),
 
             buildTextField(
-              "Chủ sở hữu *",
+              isEnglish ? 'Owner *' : 'Chủ sở hữu *',
               _ownerController,
-              "Nhập tên chủ sở hữu",
+              isEnglish ? 'Enter owner name' : 'Nhập tên chủ sở hữu',
             ),
             const SizedBox(height: 15),
 
             buildTextField(
-              "Số điện thoại *",
+              isEnglish ? 'Phone number *' : 'Số điện thoại *',
               _phoneController,
-              "Nhập số điện thoại",
+              isEnglish ? 'Enter phone number' : 'Nhập số điện thoại',
               keyboardType: TextInputType.phone,
             ),
             const SizedBox(height: 15),
 
             buildTextField(
-              "Ghi chú",
+              isEnglish ? 'Note' : 'Ghi chú',
               _noteController,
               "Nhập ghi chú",
               maxLines: 3,
@@ -359,7 +390,9 @@ class _AddEditPetScreenState extends State<AddEditPetScreen> {
                   ),
                 ),
                 child: Text(
-                  isEdit ? "Cập nhật" : "Lưu",
+                  isEdit
+                      ? (isEnglish ? 'Update' : 'Cập nhật')
+                      : (isEnglish ? 'Save' : 'Lưu'),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -381,18 +414,33 @@ class _AddEditPetScreenState extends State<AddEditPetScreen> {
     TextInputType keyboardType = TextInputType.text,
     int maxLines = 1,
   }) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
+        Text(
+          label,
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            color: colorScheme.onSurface,
+          ),
+        ),
         const SizedBox(height: 5),
         TextField(
           controller: controller,
           keyboardType: keyboardType,
           maxLines: maxLines,
+          style: TextStyle(color: colorScheme.onSurface),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: const TextStyle(color: Colors.grey, fontSize: 13),
+            hintStyle: TextStyle(
+              color: colorScheme.onSurfaceVariant,
+              fontSize: 13,
+            ),
+            fillColor: colorScheme.surface,
+            filled: true,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 12,
               vertical: 12,
@@ -400,7 +448,7 @@ class _AddEditPetScreenState extends State<AddEditPetScreen> {
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: Colors.grey.shade300),
+              borderSide: BorderSide(color: colorScheme.outlineVariant),
             ),
           ),
         ),
@@ -412,20 +460,46 @@ class _AddEditPetScreenState extends State<AddEditPetScreen> {
     String label,
     String value,
     List<String> items,
-    Function(String?) onChanged,
-  ) {
+    Function(String?) onChanged, {
+    bool isEnglish = false,
+    bool isSpecies = false,
+    bool isGender = false,
+  }) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
+        Text(
+          label,
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            color: colorScheme.onSurface,
+          ),
+        ),
         const SizedBox(height: 5),
         DropdownButtonFormField<String>(
           value: value,
           items: items
-              .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+              .map(
+                (e) => DropdownMenuItem(
+                  value: e,
+                  child: Text(
+                    isSpecies
+                        ? getPetSpeciesLabel(e, isEnglish)
+                        : isGender
+                        ? getPetGenderLabel(e, isEnglish)
+                        : e,
+                    style: TextStyle(color: colorScheme.onSurface),
+                  ),
+                ),
+              )
               .toList(),
           onChanged: onChanged,
           decoration: InputDecoration(
+            fillColor: colorScheme.surface,
+            filled: true,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 12,
               vertical: 10,
@@ -433,7 +507,7 @@ class _AddEditPetScreenState extends State<AddEditPetScreen> {
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: Colors.grey.shade300),
+              borderSide: BorderSide(color: colorScheme.outlineVariant),
             ),
           ),
         ),

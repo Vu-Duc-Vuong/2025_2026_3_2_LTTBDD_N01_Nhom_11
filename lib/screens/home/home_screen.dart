@@ -303,23 +303,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               }
             },
-            items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            items: [
               BottomNavigationBarItem(
-                icon: Icon(Icons.pets),
-                label: 'Thú cưng',
+                icon: const Icon(Icons.home),
+                label: isEnglish ? 'Home' : 'Trang chủ',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.vaccines),
-                label: 'Lịch tiêm +',
+                icon: const Icon(Icons.pets),
+                label: isEnglish ? 'Pets' : 'Thú cưng',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.notifications_none),
-                label: 'Thông báo',
+                icon: const Icon(Icons.vaccines),
+                label: isEnglish ? 'Vaccines' : 'Lịch tiêm',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.settings),
-                label: 'Cài đặt',
+                icon: const Icon(Icons.notifications_none),
+                label: isEnglish ? 'Notifications' : 'Thông báo',
+              ),
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.settings),
+                label: isEnglish ? 'Settings' : 'Cài đặt',
               ),
             ],
           ),

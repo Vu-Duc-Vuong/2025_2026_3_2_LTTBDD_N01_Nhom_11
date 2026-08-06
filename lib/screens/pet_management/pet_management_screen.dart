@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart'; // Import để sử dụng kIsWeb
 import 'package:flutter/material.dart';
 import '../../models/pet_model.dart';
+import '../../language_notifier.dart';
 import 'add_pet_screen.dart';
 import '../health/pet_profile_screen.dart';
 
@@ -16,6 +17,8 @@ class PetManagementScreen extends StatefulWidget {
 
 class _PetManagementScreenState extends State<PetManagementScreen> {
   late List<Pet> pets;
+
+  bool get isEnglish => languageNotifier.value == 'English';
 
   @override
   void initState() {
@@ -97,13 +100,15 @@ class _PetManagementScreenState extends State<PetManagementScreen> {
                 ),
               ),
               const SizedBox(height: 15),
-              const Text(
-                "Xóa thú cưng",
+              Text(
+                isEnglish ? 'Delete Pet' : 'Xóa thú cưng',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
               const SizedBox(height: 10),
               Text(
-                "Bạn có chắc chắn muốn xóa\n\"${pet.name}\" không?",
+                isEnglish
+                    ? 'Are you sure you want to delete\n"${pet.name}"?'
+                    : 'Bạn có chắc chắn muốn xóa\n"${pet.name}" không?',
                 textAlign: TextAlign.center,
                 style: const TextStyle(color: Colors.grey),
               ),
@@ -118,8 +123,8 @@ class _PetManagementScreenState extends State<PetManagementScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: const Text(
-                        "Hủy",
+                      child: Text(
+                        isEnglish ? 'Cancel' : 'Hủy',
                         style: TextStyle(color: Colors.black),
                       ),
                     ),
@@ -139,8 +144,8 @@ class _PetManagementScreenState extends State<PetManagementScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: const Text(
-                        "Xóa",
+                      child: Text(
+                        isEnglish ? 'Delete' : 'Xóa',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -156,23 +161,31 @@ class _PetManagementScreenState extends State<PetManagementScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return WillPopScope(
       onWillPop: () async {
         Navigator.pop(context, pets);
         return false;
       },
       child: Scaffold(
-        backgroundColor: const Color(0xffF7F8FA),
+        backgroundColor: theme.scaffoldBackgroundColor,
         appBar: AppBar(
-          title: const Text(
-            "Danh sách thú cưng",
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          title: Text(
+            isEnglish ? 'Pet List' : 'Danh sách thú cưng',
+            style: TextStyle(
+              color: colorScheme.onSurface,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           centerTitle: true,
-          backgroundColor: Colors.white,
+          backgroundColor:
+              theme.appBarTheme.backgroundColor ?? colorScheme.surface,
+          foregroundColor: colorScheme.onSurface,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+            icon: Icon(Icons.arrow_back_ios, color: colorScheme.onSurface),
             onPressed: () => Navigator.pop(context, pets),
           ),
         ),
@@ -185,14 +198,10 @@ class _PetManagementScreenState extends State<PetManagementScreen> {
                 height: 120,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
-                  color: Colors.teal.shade50,
+                  color: colorScheme.primaryContainer.withOpacity(0.5),
                 ),
                 child: Center(
-                  child: Icon(
-                    Icons.pets,
-                    size: 70,
-                    color: Colors.teal.shade300,
-                  ),
+                  child: Icon(Icons.pets, size: 70, color: colorScheme.primary),
                 ),
               ),
               const SizedBox(height: 15),
@@ -216,8 +225,8 @@ class _PetManagementScreenState extends State<PetManagementScreen> {
                     }
                   },
                   icon: const Icon(Icons.add, color: Colors.white),
-                  label: const Text(
-                    "Thêm thú cưng",
+                  label: Text(
+                    isEnglish ? 'Add Pet' : 'Thêm thú cưng',
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                   style: ElevatedButton.styleFrom(
@@ -250,6 +259,7 @@ class _PetManagementScreenState extends State<PetManagementScreen> {
                     },
                     child: Card(
                       margin: const EdgeInsets.only(bottom: 12),
+                      color: theme.cardColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -266,23 +276,24 @@ class _PetManagementScreenState extends State<PetManagementScreen> {
                                 children: [
                                   Text(
                                     pet.name,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
+                                      color: colorScheme.onSurface,
                                     ),
                                   ),
                                   const SizedBox(height: 2),
                                   Text(
                                     "${pet.species} - ${pet.breed}",
-                                    style: const TextStyle(
-                                      color: Colors.grey,
+                                    style: TextStyle(
+                                      color: colorScheme.onSurfaceVariant,
                                       fontSize: 13,
                                     ),
                                   ),
                                   Text(
                                     "${pet.weight} kg",
-                                    style: const TextStyle(
-                                      color: Colors.grey,
+                                    style: TextStyle(
+                                      color: colorScheme.onSurfaceVariant,
                                       fontSize: 13,
                                     ),
                                   ),
@@ -290,9 +301,9 @@ class _PetManagementScreenState extends State<PetManagementScreen> {
                               ),
                             ),
                             IconButton(
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.edit_outlined,
-                                color: Colors.teal,
+                                color: colorScheme.primary,
                               ),
                               onPressed: () async {
                                 final updatedPet = await Navigator.push(
@@ -309,9 +320,9 @@ class _PetManagementScreenState extends State<PetManagementScreen> {
                               },
                             ),
                             IconButton(
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.delete_outline,
-                                color: Colors.red,
+                                color: colorScheme.error,
                               ),
                               onPressed: () => _confirmDelete(pet, index),
                             ),

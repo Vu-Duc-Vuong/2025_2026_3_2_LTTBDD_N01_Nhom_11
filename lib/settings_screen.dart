@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'language_notifier.dart';
 import 'about_team_screen.dart';
+import 'theme_notifier.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -10,8 +11,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool isDarkMode = true;
-
   void _showAppInfoDialog(bool isEnglish) {
     showDialog(
       context: context,
@@ -74,9 +73,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         final isEnglish = currentLang == 'English';
 
         return Scaffold(
-          appBar: AppBar(
-            title: Text(isEnglish ? 'Settings' : 'Cài đặt'),
-          ),
+          appBar: AppBar(title: Text(isEnglish ? 'Settings' : 'Cài đặt')),
           body: ListView(
             children: [
               ListTile(
@@ -98,14 +95,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   }
                 },
               ),
-              SwitchListTile(
-                secondary: const Icon(Icons.dark_mode_outlined),
-                title: const Text('Dark Mode'),
-                value: isDarkMode,
-                onChanged: (val) {
-                  setState(() {
-                    isDarkMode = val;
-                  });
+              ValueListenableBuilder<ThemeMode>(
+                valueListenable: themeNotifier,
+                builder: (context, currentMode, child) {
+                  final isDarkEnabled = currentMode == ThemeMode.dark;
+
+                  return SwitchListTile(
+                    secondary: const Icon(Icons.dark_mode_outlined),
+                    title: const Text('Dark Mode'),
+                    value: isDarkEnabled,
+                    onChanged: (val) {
+                      themeNotifier.value = val
+                          ? ThemeMode.dark
+                          : ThemeMode.light;
+                      setState(() {});
+                    },
+                  );
                 },
               ),
               ListTile(

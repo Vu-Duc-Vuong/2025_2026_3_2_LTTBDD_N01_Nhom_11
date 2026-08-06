@@ -4,6 +4,7 @@ import 'weight_screen.dart';
 import 'vaccination_screen.dart';
 import '../../settings_screen.dart';
 import '../../models/pet_model.dart';
+import '../../language_notifier.dart';
 
 class HealthScreen extends StatelessWidget {
   final Pet pet;
@@ -14,145 +15,152 @@ class HealthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final latestWeight = "${pet.weight} kg";
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Hồ sơ thú cưng'),
+    return ValueListenableBuilder<String>(
+      valueListenable: languageNotifier,
+      builder: (context, currentLang, child) {
+        final isEnglish = currentLang == 'English';
 
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(isEnglish ? 'Pet profile' : 'Hồ sơ thú cưng'),
 
-            onPressed: () {
-              Navigator.push(
-                context,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.settings),
 
-                MaterialPageRoute(builder: (_) => const SettingsScreen()),
-              );
-            },
-          ),
-        ],
-      ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
 
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-
-          children: [
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.pets, size: 40),
-
-                title: Text(
-                  pet.name,
-
-                  style: const TextStyle(
-                    fontSize: 20,
-
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
-                subtitle: Text("${pet.species} - ${pet.breed}"),
+                    MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                  );
+                },
               ),
-            ),
+            ],
+          ),
 
-            const SizedBox(height: 20),
+          body: Padding(
+            padding: const EdgeInsets.all(16),
 
-            const Text(
-              "Theo dõi sức khỏe",
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
 
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-
-            const SizedBox(height: 10),
-
-            Row(
               children: [
-                Expanded(
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(12),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.pets, size: 40),
 
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => WeightScreen(pet: pet),
-                        ),
-                      );
-                    },
+                    title: Text(
+                      pet.name,
 
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
+                      style: const TextStyle(
+                        fontSize: 20,
 
-                        child: Column(
-                          children: [
-                            const Icon(Icons.monitor_weight, size: 40),
-
-                            const SizedBox(height: 8),
-
-                            const Text("Cân nặng"),
-
-                            const SizedBox(height: 4),
-
-                            Text(
-                              latestWeight,
-
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
+
+                    subtitle: Text("${pet.species} - ${pet.breed}"),
                   ),
                 ),
 
-                const SizedBox(width: 12),
+                const SizedBox(height: 20),
 
-                Expanded(
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(12),
+                Text(
+                  isEnglish ? 'Health tracking' : 'Theo dõi sức khỏe',
 
-                    onTap: () {
-                      Navigator.push(
-                        context,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
 
-                        MaterialPageRoute(
-                          builder: (_) => const VaccinationScreen(),
-                        ),
-                      );
-                    },
+                const SizedBox(height: 10),
 
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(12),
 
-                        child: Column(
-                          children: const [
-                            Icon(Icons.vaccines, size: 40),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => WeightScreen(pet: pet),
+                            ),
+                          );
+                        },
 
-                            SizedBox(height: 8),
+                        child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
 
-                            Text("Lịch tiêm"),
+                            child: Column(
+                              children: [
+                                const Icon(Icons.monitor_weight, size: 40),
 
-                            SizedBox(height: 4),
+                                const SizedBox(height: 8),
 
-                            Text("3 mũi"),
-                          ],
+                                Text(isEnglish ? 'Weight' : 'Cân nặng'),
+
+                                const SizedBox(height: 4),
+
+                                Text(
+                                  latestWeight,
+
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
+
+                    const SizedBox(width: 12),
+
+                    Expanded(
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(12),
+
+                        onTap: () {
+                          Navigator.push(
+                            context,
+
+                            MaterialPageRoute(
+                              builder: (_) => const VaccinationScreen(),
+                            ),
+                          );
+                        },
+
+                        child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+
+                            child: Column(
+                              children: [
+                                const Icon(Icons.vaccines, size: 40),
+
+                                const SizedBox(height: 8),
+
+                                Text(isEnglish ? 'Vaccination' : 'Lịch tiêm'),
+
+                                const SizedBox(height: 4),
+
+                                Text(isEnglish ? '3 doses' : '3 mũi'),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
